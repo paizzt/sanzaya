@@ -1,0 +1,21 @@
+Berdasarkan data percobaan (seeder) yang kita masukkan ke database sebelumnya, berikut adalah detail akun untuk login sebagai Staff:
+
+Email: staff@perusahaan.com
+
+Password: password123
+
+Sebagai pengingat, berikut adalah akun untuk role lainnya jika Anda ingin menguji dashboard mereka:
+
+Admin:
+
+Email: admin@perusahaan.com
+
+Password: password123
+
+Manager:
+
+Email: manager@perusahaan.com
+
+Password: password123
+
+Silakan gunakan data di atas pada halaman login yang sudah kita buat!
