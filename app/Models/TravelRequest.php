@@ -13,7 +13,7 @@ class TravelRequest extends Model
     protected $guarded = ['id'];
 
     /**
-     * Relasi ke tabel users (Pemohon SPPD)
+     * Relasi ke tabel users (Pemohon UC)
      */
     public function user()
     {

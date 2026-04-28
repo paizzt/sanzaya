@@ -6,28 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('travel_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete(); // Relasi ke pembuat (Staff/Manager/Dll)
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            
+            // --- TAMBAHKAN KOLOM INI ---
+            $table->string('departure'); 
             
             $table->string('destination');
-            $table->text('purpose');
             $table->date('start_date');
             $table->date('end_date');
-            
-            // Status berjenjang: 'pending_l1', 'pending_l2', 'approved', 'rejected'
-            $table->string('status')->default('pending_l1'); 
-            
-            // Rekam Jejak Level 1 (HRD/Manager/Kepala Marketing)
-            $table->foreignId('l1_approver_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('companion_1')->nullable();
+            $table->string('companion_2')->nullable();
+            $table->string('transportation_type');
+            $table->string('vehicle_number')->nullable();
+            $table->enum('status', ['pending_l1', 'pending_l2', 'approved', 'rejected'])->default('pending_l1');
             $table->text('l1_note')->nullable();
-            
-            // Rekam Jejak Level 2 (Finance)
-            $table->foreignId('l2_approver_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('l2_note')->nullable();
-
+            $table->foreignId('l1_approver_id')->nullable()->constrained('users');
+            $table->foreignId('l2_approver_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pengajuan SPPD - Satu Sanzaya</title>
+    <title>Detail Pengajuan UC - Satu Sanzaya</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -195,7 +195,7 @@
                     
                     <div class="summary-header">
                         <div>
-                            <h2 class="req-id">#SPPD-20271230-001</h2>
+                            <h2 class="req-id">#UC-20271230-001</h2>
                             <p class="req-date">Diajukan pada: 20 April 2026, 10:49 WITA</p>
                         </div>
                     </div>

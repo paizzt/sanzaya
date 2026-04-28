@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pengajuan UC - Satu Sanzaya</title>
+    <title>Pengajuan SPPD - Satu Sanzaya</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -260,6 +260,13 @@
                                     <div class="col-md-6" id="no_polisi_div">
                                         <label class="form-label-custom">No. Polisi Kendaraan (Jika Darat)</label>
                                         <input type="text" name="vehicle_number" id="vehicle_number" class="input-custom" placeholder="Contoh: DD 1234 XY">
+                                    </div>
+                                    
+                                    <!-- TAMBAHAN INPUT BENSIN -->
+                                    <div class="col-md-12 mt-4">
+                                        <label class="form-label-custom text-primary"><i class="fas fa-gas-pump me-2"></i>Estimasi Biaya Bensin (Manual)</label>
+                                        <input type="number" name="biaya_bensin" class="input-custom" placeholder="Contoh: 150000 (Isi jika ada kebutuhan bensin/transportasi tambahan)">
+                                        <small class="text-muted" style="font-size: 11px;">*Biaya makan dan penginapan akan dihitung otomatis oleh sistem.</small>
                                     </div>
                                 </div>
 

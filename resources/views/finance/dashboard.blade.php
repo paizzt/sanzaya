@@ -18,14 +18,13 @@
             --text-gray: #888888;
             --border-color: #EAEAEA;
             --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px;
-            --finance-green: #10B981; /* Warna hijau khas finance */
+            --sidebar-collapsed-width: 80px; 
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: #F8FAFC; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
         .wrapper { display: flex; height: 100vh; }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR KONSISTEN --- */
         .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
         .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
         .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
@@ -34,76 +33,116 @@
         .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
         .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
         .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: #ECFDF5; color: var(--finance-green); font-weight: 600; }
+        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
         .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
         .menu-text { margin-left: 15px; transition: opacity 0.2s; }
         .sidebar.collapsed .menu-text { opacity: 0; display: none; }
         .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
 
-        /* --- MAIN CONTENT --- */
+        /* --- MAIN CONTENT & NAVBAR --- */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
         .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 10; }
+        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
         .nav-right { display: flex; align-items: center; gap: 25px; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .user-info { text-align: right; line-height: 1.2; }
         .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: uppercase; }
-        .user-avatar { font-size: 32px; color: var(--finance-green); }
+        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: capitalize; }
+        .user-avatar { font-size: 32px; color: var(--primary-blue); }
         .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
 
         /* --- DASHBOARD CARDS --- */
-        .stat-card { background: white; border-radius: 16px; padding: 25px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); height: 100%; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .stat-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .icon-blue { background: #EFF6FF; color: #2563EB; }
-        .icon-green { background: #ECFDF5; color: #10B981; }
+        .stat-card { background: #FFFFFF; border-radius: 16px; padding: 25px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+        .stat-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         
-        .stat-info h3 { margin: 0; font-weight: 700; color: var(--text-dark); font-size: 28px; }
-        .stat-info p { margin: 0; color: var(--text-gray); font-size: 13px; font-weight: 600; }
+        .card-blue .stat-icon { background: #EFF6FF; color: #3B82F6; }
+        .card-green .stat-icon { background: #ECFDF5; color: #10B981; }
+        .card-red .stat-icon { background: #FEF2F2; color: #EF4444; }
+        .card-purple .stat-icon { background: #F5F3FF; color: #8B5CF6; }
 
-        /* --- ACTION BANNER --- */
-        .action-banner { background: var(--finance-green); border-radius: 16px; padding: 30px; color: white; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
-        .btn-banner { background: white; color: var(--finance-green); border: none; padding: 12px 25px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: 0.2s; }
-        .btn-banner:hover { background: #F8FAFC; transform: translateY(-2px); color: var(--finance-green); }
+        .stat-info h3 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin: 0; }
+        .stat-info p { font-size: 13px; font-weight: 500; color: var(--text-gray); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* --- TABLE RECENT --- */
-        .table-card { background: white; border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .table-header { padding: 20px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .table th { background: #FAFAFA; padding: 15px 25px; font-size: 12px; text-transform: uppercase; color: var(--text-gray); border-bottom: 1px solid var(--border-color); }
-        .table td { padding: 18px 25px; vertical-align: middle; font-size: 14px; border-bottom: 1px solid #F1F5F9; }
-        .badge-finance { background: #EFF6FF; color: #2563EB; padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; }
+        /* --- QUICK ACTION & LIST CARD --- */
+        .action-card { background: linear-gradient(135deg, #3B82F6, #1D4ED8); border-radius: 16px; padding: 30px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; height: 100%; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2); position: relative; overflow: hidden; }
+        .action-card::after { content: '\f53d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: -10px; bottom: -20px; font-size: 150px; color: rgba(255,255,255,0.1); transform: rotate(-15deg); }
+        .action-card h4 { font-weight: 700; margin-bottom: 10px; position: relative; z-index: 2; }
+        .action-card p { font-size: 13px; opacity: 0.9; margin-bottom: 20px; position: relative; z-index: 2; max-width: 90%; }
+        .btn-light-custom { background: white; color: #1D4ED8; font-weight: 600; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: inline-block; position: relative; z-index: 2; transition: 0.3s; }
+        .btn-light-custom:hover { background: #EFF6FF; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); color: #1E3A8A; }
 
-        /* Responsive Overlay */
+        .list-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 25px; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .list-card-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed var(--border-color); }
+        .list-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .item-left { display: flex; align-items: center; gap: 15px; }
+        .item-icon { width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; color: #3B82F6; font-size: 16px; }
+
+        /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
+        
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
             .sidebar.mobile-active { left: 0; }
             .sidebar-overlay.active { display: block; }
-            .main-content { width: 100%; }
+            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
+            .top-navbar { padding: 0 20px; }
             .content-area { padding: 20px; }
-            .action-banner { flex-direction: column; text-align: center; gap: 20px; }
             .user-role { display: none; }
+            .action-card::after { font-size: 100px; right: -10px; bottom: -20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- MENGAMBIL DATA STATISTIK FINANCE LANGSUNG -->
+    @php
+        $userId = \Illuminate\Support\Facades\Auth::id();
+        
+        // Menghitung jumlah SPPD yang menunggu Pencairan Finance (pending_l2)
+        $menungguPencairan = \App\Models\TravelRequest::where('status', 'pending_l2')->count();
+        
+        // Menghitung SPPD yang sudah dicairkan atau ditolak oleh Finance ini
+        $disetujuiFinance = \App\Models\TravelRequest::where('l2_approver_id', $userId)
+                              ->where('status', 'approved')
+                              ->count();
+        $ditolakFinance = \App\Models\TravelRequest::where('l2_approver_id', $userId)
+                            ->where('status', 'rejected')
+                            ->count();
+                            
+        // Total yang pernah dipegang
+        $totalDiproses = $disetujuiFinance + $ditolakFinance;
+
+        // Mengambil daftar terbaru yang butuh pencairan
+        $antreanTerbaru = \App\Models\TravelRequest::with('user')
+                            ->where('status', 'pending_l2')
+                            ->orderBy('created_at', 'asc') // Yang paling lama mengantre diutamakan
+                            ->take(5)
+                            ->get();
+    @endphp
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="wrapper">
+        
+        <!-- SIDEBAR FINANCE -->
         <aside class="sidebar" id="sidebar">
             <div class="logo-area">
-                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
+                <a href="{{ route('finance.dashboard') ?? '#' }}">
+                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
+                </a>
             </div>
 
             <ul class="sidebar-menu">
-                <li><a href="{{ route('finance.dashboard') }}" class="menu-item active"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('approvals.index') }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Daftar Persetujuan</span></a></li>
-                <li><a href="#" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Pencairan</span></a></li>
-                <li><a href="#" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
+                <li><a href="{{ route('finance.dashboard') ?? '#' }}" class="menu-item active"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
+                <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-invoice-dollar menu-icon"></i><span class="menu-text">Antrean Pencairan</span></a></li>
+                <li><a href="{{ route('finance.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Pencairan</span></a></li>
+                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
+                <li><a href="{{ route('finance.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
             </ul>
 
             <div class="sidebar-footer">
@@ -114,17 +153,24 @@
             </div>
         </aside>
 
+        <!-- MAIN CONTENT -->
         <div class="main-content">
             <header class="top-navbar">
                 <div class="nav-left">
                     <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="fw-bold m-0 ms-3 d-none d-md-block">Beranda Keuangan</h5>
+                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Beranda Keuangan (L2)</h5>
                 </div>
                 <div class="nav-right">
+                    <div class="nav-icon position-relative">
+                        <i class="far fa-bell"></i>
+                        @if($menungguPencairan > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                        @endif
+                    </div>
                     <div class="user-profile">
                         <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name }}</p>
-                            <p class="user-role">{{ Auth::user()->role }}</p>
+                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Finance' }}</p>
+                            <p class="user-role">{{ Auth::user()->role ?? 'finance' }}</p>
                         </div>
                         <i class="fas fa-user-circle user-avatar"></i>
                     </div>
@@ -132,89 +178,144 @@
             </header>
 
             <main class="content-area">
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon icon-blue"><i class="fas fa-file-invoice-dollar"></i></div>
-                            <div class="stat-info">
-                                <h3>{{ $pendingL2 }}</h3>
-                                <p>Menunggu Pencairan Anda (Tahap 2)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
-                            <div class="stat-info">
-                                <h3>{{ $totalApproved }}</h3>
-                                <p>Total SPPD Telah Disetujui</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-banner">
+                
+                <div class="d-flex justify-content-between align-items-end mb-4">
                     <div>
-                        <h4 class="fw-bold mb-1">Tindakan Pencairan Diperlukan!</h4>
-                        <p class="m-0 opacity-75">Ada {{ $pendingL2 }} pengajuan yang sudah lolos tahap Manajer dan menunggu persetujuan dana dari Anda.</p>
+                        <h4 class="fw-bold mb-1" style="color: var(--text-dark);">Halo, Tim {{ Auth::user()->name ?? 'Finance' }}! 👋</h4>
+                        <p class="text-muted small m-0">Berikut adalah ringkasan pencairan dana perjalanan dinas yang perlu diproses.</p>
                     </div>
-                    <a href="{{ route('approvals.index') }}" class="btn-banner">Proses Sekarang <i class="fas fa-arrow-right ms-2"></i></a>
+                    <div class="d-none d-md-block text-end">
+                        <p class="text-muted small m-0 fst-italic">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
+                    </div>
                 </div>
 
-                <div class="table-card">
-                    <div class="table-header">
-                        <h5 class="fw-bold m-0">SPPD Terbaru Menunggu Pencairan</h5>
-                        <a href="{{ route('approvals.index') }}" class="text-decoration-none small fw-600" style="color: var(--finance-green);">Lihat Semua</a>
+                <!-- ROW 1: KARTU STATISTIK -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card card-blue">
+                            <div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                            <div class="stat-info">
+                                <h3>{{ $menungguPencairan }}</h3>
+                                <p>Butuh Pencairan</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-borderless align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nama Pemohon</th>
-                                    <th>Tujuan</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Status Berkas</th>
-                                    <th class="text-end">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($recentRequests as $req)
-                                <tr>
-                                    <td><span class="fw-bold text-dark">{{ $req->user->name }}</span></td>
-                                    <td>{{ $req->destination }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($req->start_date)->format('d M Y') }}</td>
-                                    <td><span class="badge-finance">Menunggu Finance</span></td>
-                                    <td class="text-end">
-                                        <a href="{{ route('approvals.index') }}" class="btn btn-sm btn-outline-success px-3 fw-600" style="border-radius: 8px;">Periksa</a>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted">
-                                        <i class="fas fa-wallet fa-2x mb-3 d-block opacity-50"></i>
-                                        Tidak ada pengajuan yang perlu dicairkan saat ini.
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card card-green">
+                            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="stat-info">
+                                <h3>{{ $disetujuiFinance }}</h3>
+                                <p>Telah Dicairkan</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card card-red">
+                            <div class="stat-icon"><i class="fas fa-ban"></i></div>
+                            <div class="stat-info">
+                                <h3>{{ $ditolakFinance }}</h3>
+                                <p>Ditolak L2</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card card-purple">
+                            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="stat-info">
+                                <h3>{{ $totalDiproses }}</h3>
+                                <p>Total Diproses</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ROW 2: ACTION & LIST ANTRIAN TERBARU -->
+                <div class="row g-4">
+                    
+                    <!-- KARTU ALERT ANTRIAN -->
+                    <div class="col-lg-5">
+                        <div class="action-card">
+                            @if($menungguPencairan > 0)
+                                <h4>Ada {{ $menungguPencairan }} Pencairan Tertunda!</h4>
+                                <p>Dokumen SPPD ini telah lolos dari Manajer (L1) dan kini membutuhkan tindakan Anda untuk pencairan dana operasional.</p>
+                                <a href="{{ route('approvals.index') ?? '#' }}" class="btn-light-custom">
+                                    Tinjau & Cairkan <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            @else
+                                <h4>Semua Tuntas! 🎉</h4>
+                                <p>Kerja bagus! Tidak ada dokumen SPPD yang menunggu pencairan dana dari divisi Keuangan saat ini.</p>
+                                <a href="{{ route('finance.history') ?? '#' }}" class="btn-light-custom" style="background: rgba(255,255,255,0.2); color: white;">
+                                    Lihat Riwayat <i class="fas fa-history ms-2"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- DAFTAR ANTREAN PENTING (L2) -->
+                    <div class="col-lg-7">
+                        <div class="list-card">
+                            <div class="list-card-title">
+                                <span><i class="fas fa-inbox text-primary me-2"></i> Antrean Butuh Pencairan (L2)</span>
+                                <a href="{{ route('approvals.index') ?? '#' }}" class="btn btn-sm btn-light border text-primary" style="font-size: 11px; font-weight: 600;">Lihat Semua</a>
+                            </div>
+                            
+                            <div class="list-container">
+                                @forelse($antreanTerbaru as $sppd)
+                                <div class="list-item">
+                                    <div class="item-left">
+                                        <div class="item-icon">
+                                            <i class="fas fa-file-invoice"></i>
+                                        </div>
+                                        <div>
+                                            <p class="m-0 fw-bold text-dark" style="font-size: 13px;">{{ $sppd->user->name ?? 'User' }} - {{ $sppd->destination }}</p>
+                                            <p class="m-0 text-muted" style="font-size: 11px;">
+                                                <i class="far fa-calendar-alt me-1"></i> Mulai: {{ \Carbon\Carbon::parse($sppd->start_date)->format('d M Y') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <a href="{{ route('approvals.show', $sppd->id) }}" class="btn btn-sm btn-outline-primary" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
+                                            Detail Pencairan
+                                        </a>
+                                        <p class="m-0 text-muted mt-1" style="font-size: 10px;">Lolos L1: {{ \Carbon\Carbon::parse($sppd->updated_at)->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center py-4 text-muted small">
+                                    <i class="fas fa-check-circle fa-2x mb-2" style="color: #A7F3D0;"></i><br>
+                                    Tidak ada antrean SPPD yang membutuhkan pencairan.
+                                </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
             </main>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
+        // --- LOGIKA RESPONSIVE SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         
-        document.getElementById('toggleSidebar').addEventListener('click', () => {
-            if (window.innerWidth <= 768) { sidebar.classList.toggle('mobile-active'); overlay.classList.toggle('active'); } 
-            else { sidebar.classList.toggle('collapsed'); }
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-active');
+                overlay.classList.toggle('active');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
         });
-
-        overlay.addEventListener('click', () => { sidebar.classList.remove('mobile-active'); overlay.classList.remove('active'); });
+        
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-active');
+            overlay.classList.remove('active');
+        });
     </script>
 </body>
 </html>

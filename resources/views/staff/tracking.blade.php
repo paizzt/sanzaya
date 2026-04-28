@@ -113,7 +113,7 @@
             <ul class="sidebar-menu">
                 <li><a href="{{ route('staff.dashboard') }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
                 <li><a href="{{ route('staff.riwayat') }}" class="menu-item active"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Pengajuan</span></a></li>
-                <li><a href="{{ route('staff.pengajuan.create') }}" class="menu-item"><i class="fas fa-file-lines menu-icon"></i><span class="menu-text">Pengajuan SPPD</span></a></li>
+                <li><a href="{{ route('staff.pengajuan.create') }}" class="menu-item"><i class="fas fa-file-lines menu-icon"></i><span class="menu-text">Pengajuan UC</span></a></li>
                 <li><a href="{{ route('staff.settings') }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
             </ul>
             <div class="sidebar-footer">
@@ -147,7 +147,7 @@
                     <div class="doc-header">
                         <div>
                             <h4 class="fw-bold text-dark mb-1">Tujuan: {{ $pengajuan->destination }}</h4>
-                            <p class="text-muted mb-0 small">Kode Berkas: #SPPD-{{ str_pad($pengajuan->id, 4, '0', STR_PAD_LEFT) }}</p>
+                            <p class="text-muted mb-0 small">Kode Berkas: #UC-{{ str_pad($pengajuan->id, 4, '0', STR_PAD_LEFT) }}</p>
                         </div>
                         <a href="{{ route('staff.riwayat') }}" class="btn btn-light border fw-bold px-4 rounded-3"><i class="fas fa-arrow-left me-2"></i> Kembali</a>
                     </div>
@@ -234,7 +234,7 @@
                     @if($pengajuan->status == 'approved')
                     <div class="text-center mt-5">
                         <a href="{{ route('staff.pengajuan.pdf', $pengajuan->id) }}" class="btn btn-lg px-5 text-white shadow-sm" style="background-color: var(--success-color); border-radius: 12px; font-weight: 600;">
-                            <i class="fas fa-download me-2"></i> Unduh Surat SPPD (PDF)
+                            <i class="fas fa-download me-2"></i> Unduh Surat UC (PDF)
                         </a>
                     </div>
                     @endif

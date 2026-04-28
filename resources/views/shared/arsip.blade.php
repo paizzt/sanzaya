@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Persetujuan UC - Satu Sanzaya</title>
+    <title>Arsip Seluruh SPPD - Satu Sanzaya</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -53,7 +53,7 @@
         .user-avatar { font-size: 32px; color: var(--primary-blue); }
         .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
 
-        /* --- STYLING HALAMAN DAFTAR PERSETUJUAN --- */
+        /* --- STYLING HALAMAN ARSIP --- */
         .filter-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
         .table-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .table th { font-weight: 600; font-size: 12px; color: var(--text-gray); text-transform: uppercase; padding: 15px 20px; background-color: #FAFAFA; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px; }
@@ -68,10 +68,12 @@
         .status-pill { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
         .bg-warning-light { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
         .bg-info-light { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+        .bg-success-light { background: #ECFDF5; color: #10B981; border: 1px solid #A7F3D0; }
+        .bg-danger-light { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }
 
         /* Action Button */
-        .btn-review { background-color: var(--primary-blue); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; }
-        .btn-review:hover { background-color: #08427b; color: white; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(10,83,155,0.2); }
+        .btn-review { background-color: #F8FAFC; color: var(--primary-blue); border: 1px solid #CBD5E1; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; }
+        .btn-review:hover { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
 
         /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
@@ -89,29 +91,18 @@
 </head>
 <body>
 
-    <!-- MENGAMBIL DATA ANTREAN OTOMATIS BERDASARKAN ROLE (JIKA VARIABEL BELUM ADA) -->
+    <!-- MENGAMBIL SELURUH DATA ARSIP -->
     @php
-        $userRole = Auth::user()->role;
-        $userId = Auth::id();
-        
-        if(!isset($requests)) {
-            if(in_array($userRole, ['manager', 'hrd', 'kepala marketing'])) {
-                // Manajer melihat yang masih pending_l1
-                $requests = \App\Models\TravelRequest::with('user')->where('status', 'pending_l1')->latest()->get();
-            } elseif ($userRole == 'finance') {
-                // Finance melihat yang sudah lolos L1 dan butuh pencairan (pending_l2)
-                $requests = \App\Models\TravelRequest::with('user')->where('status', 'pending_l2')->latest()->get();
-            } else {
-                $requests = collect();
-            }
-        }
+        $userRole = strtolower(trim(Auth::user()->role));
+        // Tarik semua data dari semua pengguna
+        $requests = \App\Models\TravelRequest::with('user')->orderBy('created_at', 'desc')->get();
     @endphp
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="wrapper">
         
-        <!-- SIDEBAR PINTAR (DINAMIS BERDASARKAN ROLE) -->
+        <!-- SIDEBAR PINTAR -->
         <aside class="sidebar" id="sidebar">
             <div class="logo-area">
                 <a href="{{ url('/home') }}">
@@ -122,16 +113,16 @@
             <ul class="sidebar-menu">
                 @if(in_array($userRole, ['manager', 'hrd', 'kepala marketing']))
                     <li><a href="{{ route('manager.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                    <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item active"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan UC</span></a></li>
+                    <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan SPPD</span></a></li>
                     <li><a href="{{ route('manager.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Proses</span></a></li>
+                    <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item active"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
                     <li><a href="{{ route('manager.pengajuan.create') ?? '#' }}" class="menu-item"><i class="fas fa-paper-plane menu-icon"></i><span class="menu-text">Buat Pengajuan</span></a></li>
-                    <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
                     <li><a href="{{ route('manager.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
                 @elseif($userRole == 'finance')
                     <li><a href="{{ route('finance.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                    <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item active"><i class="fas fa-file-invoice-dollar menu-icon"></i><span class="menu-text">Antrean Pencairan</span></a></li>
+                    <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-invoice-dollar menu-icon"></i><span class="menu-text">Antrean Pencairan</span></a></li>
                     <li><a href="{{ route('finance.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Pencairan</span></a></li>
-                    <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
+                    <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item active"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
                     <li><a href="{{ route('finance.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
                 @endif
             </ul>
@@ -149,7 +140,7 @@
             <header class="top-navbar">
                 <div class="nav-left">
                     <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Daftar Antrean UC</h5>
+                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Arsip Seluruh Dokumen UC</h5>
                 </div>
                 <div class="nav-right">
                     <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
@@ -169,31 +160,32 @@
                 <div class="filter-card">
                     <div class="row align-items-end g-3">
                         <div class="col-md-4">
-                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Cari Nama Pegawai</label>
+                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Cari Pegawai / Kota</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Ketik nama...">
+                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Ketik kata kunci...">
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Filter Divisi</label>
+                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Filter Status</label>
                             <select class="form-select">
-                                <option value="">Semua Divisi</option>
-                                <option value="IT">IT</option>
-                                <option value="Marketing">Marketing</option>
-                                <option value="Operasional">Operasional</option>
+                                <option value="">Semua Arsip</option>
+                                <option value="pending_l1">Menunggu L1</option>
+                                <option value="pending_l2">Menunggu L2 (Finance)</option>
+                                <option value="approved">Selesai (Cair)</option>
+                                <option value="rejected">Ditolak</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Urutkan</label>
                             <select class="form-select">
-                                <option value="terlama">Paling Lama (Prioritas)</option>
-                                <option value="terbaru">Terbaru Diajukan</option>
+                                <option value="terbaru">Terbaru Dibuat</option>
+                                <option value="terlama">Paling Lama</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <button class="btn w-100" style="background: var(--primary-blue); color: white; border-radius: 8px; height: 38px; font-size: 13px; font-weight: 600;">
-                                <i class="fas fa-filter me-1"></i> Filter
+                                <i class="fas fa-filter me-1"></i> Terapkan
                             </button>
                         </div>
                     </div>
@@ -207,7 +199,7 @@
                                 <th style="width: 25%;">Profil Pemohon</th>
                                 <th style="width: 25%;">Tujuan & Durasi</th>
                                 <th style="width: 15%;">Tgl Pengajuan</th>
-                                <th style="width: 20%;">Status Saat Ini</th>
+                                <th style="width: 20%;">Status Terakhir</th>
                                 <th style="width: 15%; text-align: center;">Tindakan</th>
                             </tr>
                         </thead>
@@ -238,27 +230,27 @@
                                     </td>
                                     <td>
                                         @if($req->status == 'pending_l1')
-                                            <span class="status-pill bg-warning-light">
-                                                <i class="fas fa-hourglass-half"></i> Butuh ACC Manajer
-                                            </span>
+                                            <span class="status-pill bg-warning-light"><i class="fas fa-hourglass-half"></i> Menunggu Manajer</span>
                                         @elseif($req->status == 'pending_l2')
-                                            <span class="status-pill bg-info-light">
-                                                <i class="fas fa-money-check"></i> Butuh Pencairan Finance
-                                            </span>
+                                            <span class="status-pill bg-info-light"><i class="fas fa-money-check"></i> Menunggu Finance</span>
+                                        @elseif($req->status == 'approved')
+                                            <span class="status-pill bg-success-light"><i class="fas fa-check-circle"></i> Selesai (Cair)</span>
+                                        @elseif($req->status == 'rejected')
+                                            <span class="status-pill bg-danger-light"><i class="fas fa-times-circle"></i> Ditolak</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('approvals.show', $req->id) }}" class="btn-review">
-                                            <i class="fas fa-search me-1"></i> Review Dokumen
+                                            <i class="far fa-eye me-1"></i> Lihat Detail
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="5" class="text-center py-5">
-                                        <i class="fas fa-check-circle fa-3x mb-3" style="color: #A7F3D0;"></i>
-                                        <h6 class="fw-bold text-dark mb-1">Antrean Kosong</h6>
-                                        <p class="text-muted small mb-0">Kerja bagus! Tidak ada pengajuan UC yang membutuhkan tindakan Anda saat ini.</p>
+                                        <i class="fas fa-archive fa-3x mb-3" style="color: #CBD5E1;"></i>
+                                        <h6 class="fw-bold text-dark mb-1">Arsip Kosong</h6>
+                                        <p class="text-muted small mb-0">Belum ada dokumen pengajuan SPPD yang masuk ke dalam sistem.</p>
                                     </td>
                                 </tr>
                             @endforelse

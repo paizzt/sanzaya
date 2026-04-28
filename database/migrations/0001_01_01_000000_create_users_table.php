@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             
-            // --- KOLOM TAMBAHAN UNTUK APLIKASI SPPD ---
+            // --- KOLOM TAMBAHAN UNTUK APLIKASI UC ---
             // Menggunakan tipe 'string' agar Anda bebas menambah role (finance, hrd, dll) tanpa error constraint
             $table->string('role')->default('staff'); 
             $table->string('phone')->nullable();

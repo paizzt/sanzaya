@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pengaturan Akun - Satu Sanzaya</title>
+    <title>Pengaturan Akun Finance - Satu Sanzaya</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -50,13 +50,13 @@
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .user-info { text-align: right; line-height: 1.2; }
         .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: lowercase; }
-        .user-avatar { font-size: 32px; color: var(--text-dark); }
+        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: capitalize; }
+        .user-avatar { font-size: 32px; color: var(--primary-blue); }
         .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
 
         /* --- STYLING HALAMAN SETTINGS --- */
         .settings-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        .settings-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .settings-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
         .settings-title i { color: var(--primary-blue); }
         
         .form-label-custom { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -68,7 +68,10 @@
         .btn-save:hover { background-color: #08427b; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(10,83,155,0.3); color: white; }
 
         /* Profile Avatar Besar */
-        .avatar-lg { width: 80px; height: 80px; border-radius: 50%; background-color: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; margin-bottom: 15px; }
+        .avatar-upload { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .avatar-lg { width: 80px; height: 80px; border-radius: 50%; background-color: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; }
+        .btn-outline-custom { border: 1px solid var(--border-color); background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-outline-custom:hover { background: #F8F9FA; border-color: #CCC; }
 
         /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
@@ -90,19 +93,20 @@
 
     <div class="wrapper">
         
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR FINANCE -->
         <aside class="sidebar" id="sidebar">
             <div class="logo-area">
-                <a href="{{ route('admin.dashboard') ?? '#' }}">
+                <a href="{{ route('finance.dashboard') ?? '#' }}">
                     <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
                 </a>
             </div>
 
             <ul class="sidebar-menu">
-                <li><a href="{{ route('admin.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('admin.riwayat.perubahan') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Perubahan</span></a></li>
-                <li><a href="{{ route('admin.users.index') ?? '#' }}" class="menu-item"><i class="fas fa-users menu-icon"></i><span class="menu-text">Kelola data</span></a></li>
-                <li><a href="{{ route('admin.settings') ?? '#' }}" class="menu-item active"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
+                <li><a href="{{ route('finance.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
+                <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-invoice-dollar menu-icon"></i><span class="menu-text">Antrean Pencairan</span></a></li>
+                <li><a href="{{ route('finance.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Pencairan</span></a></li>
+                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
+                <li><a href="{{ route('finance.settings') ?? '#' }}" class="menu-item active"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
             </ul>
 
             <div class="sidebar-footer">
@@ -118,13 +122,14 @@
             <header class="top-navbar">
                 <div class="nav-left">
                     <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Pengaturan Akun & Sistem</h5>
+                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Pengaturan Akun Finance</h5>
                 </div>
                 <div class="nav-right">
+                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
                     <div class="user-profile">
                         <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Admin Name' }}</p>
-                            <p class="user-role">admin</p>
+                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Finance' }}</p>
+                            <p class="user-role">{{ Auth::user()->role ?? 'finance' }}</p>
                         </div>
                         <i class="fas fa-user-circle user-avatar"></i>
                     </div>
@@ -156,15 +161,16 @@
                     <!-- BAGIAN 1: PROFIL PRIBADI -->
                     <div class="col-xl-8">
                         <div class="settings-card h-100">
-                            <h5 class="settings-title"><i class="fas fa-user-edit"></i> Informasi Profil</h5>
+                            <h5 class="settings-title"><i class="far fa-user"></i> Informasi Profil Finance</h5>
                             
-                            <div class="d-flex flex-column flex-sm-row align-items-center gap-4 mb-4">
+                            <div class="avatar-upload">
                                 <div class="avatar-lg">
-                                    {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                                    {{ strtoupper(substr(Auth::user()->name ?? 'F', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <h5 class="fw-bold mb-1">{{ Auth::user()->name ?? 'Administrator' }}</h5>
-                                    <p class="text-muted small mb-0"><span class="badge bg-light text-primary border border-primary text-uppercase">{{ Auth::user()->role ?? 'admin' }}</span></p>
+                                    <h6 class="fw-bold mb-1">{{ Auth::user()->name ?? 'Tim Keuangan' }}</h6>
+                                    <p class="text-muted small mb-2">{{ Auth::user()->email ?? 'finance@sanzaya.com' }}</p>
+                                    <button class="btn-outline-custom"><i class="fas fa-camera me-1"></i> Ubah Foto</button>
                                 </div>
                             </div>
 
@@ -176,7 +182,7 @@
                                         <input type="text" name="name" class="input-custom" value="{{ Auth::user()->name ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label-custom">Email Pribadi / Perusahaan</label>
+                                        <label class="form-label-custom">Email Perusahaan</label>
                                         <input type="email" name="email" class="input-custom" value="{{ Auth::user()->email ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
@@ -184,13 +190,13 @@
                                         <input type="text" name="phone" class="input-custom" value="{{ Auth::user()->phone ?? '' }}" placeholder="08xxx">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label-custom">Jabatan (Sistem)</label>
-                                        <input type="text" class="input-custom" value="{{ strtoupper(Auth::user()->role ?? 'ADMIN') }}" disabled>
-                                        <small class="text-muted" style="font-size: 10px;">Jabatan tidak dapat diubah sendiri.</small>
+                                        <label class="form-label-custom">Divisi / Departemen</label>
+                                        <input type="text" class="input-custom" value="{{ Auth::user()->division ?? 'Finance' }}" disabled>
+                                        <small class="text-muted" style="font-size: 10px;">Hubungi Admin Sistem jika ada perubahan divisi.</small>
                                     </div>
                                 </div>
 
-                                <div class="mt-4 pt-3 border-top text-end">
+                                <div class="mt-4 pt-3 text-end">
                                     <button type="submit" class="btn-save"><i class="fas fa-save me-2"></i> Simpan Perubahan Profil</button>
                                 </div>
                             </form>
@@ -200,8 +206,8 @@
                     <!-- BAGIAN 2: KEAMANAN & PASSWORD -->
                     <div class="col-xl-4">
                         <div class="settings-card h-100">
-                            <h5 class="settings-title"><i class="fas fa-lock"></i> Keamanan Sandi</h5>
-                            <p class="text-muted small mb-4">Pastikan Anda menggunakan kata sandi yang kuat dan tidak mudah ditebak untuk menjaga keamanan data perusahaan.</p>
+                            <h5 class="settings-title"><i class="fas fa-shield-alt"></i> Keamanan Sandi</h5>
+                            <p class="text-muted small mb-4">Pastikan Anda menggunakan kata sandi yang kuat dan rahasia untuk menjaga keamanan persetujuan keuangan Anda.</p>
 
                             <form id="passwordForm" onsubmit="event.preventDefault(); savePassword();">
                                 
@@ -283,7 +289,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Profil Diperbarui!',
-                text: 'Perubahan data profil Anda berhasil disimpan.',
+                text: 'Perubahan data profil Finance berhasil disimpan.',
                 confirmButtonColor: '#0A539B'
             });
         }
@@ -302,7 +308,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Password Diubah!',
-                text: 'Silakan gunakan password baru pada login berikutnya.',
+                text: 'Kata sandi Finance berhasil diperbarui. Silakan gunakan password baru pada login berikutnya.',
                 confirmButtonColor: '#0A539B'
             }).then(() => {
                 form.reset();

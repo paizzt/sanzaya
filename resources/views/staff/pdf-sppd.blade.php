@@ -175,6 +175,7 @@
 
     <footer>Make a Different</footer>
 
+    <!-- ================= HALAMAN 1 ================= -->
     <div class="clearfix">
         <table class="header-table">
             <tr>
@@ -196,25 +197,17 @@
                         </tr>
                         <tr>
                             <td class="sign-space">
-                                <u>{{ $pengajuan->user->name }}</u>
+                                <u>{{ $pengajuan->user->name ?? 'Staff Pegawai' }}</u>
                             </td>
                             <td class="sign-space">
-                                @if($pengajuan->l1Approver)
-                                    <u>{{ $pengajuan->l1Approver->name }}</u>
-                                @else
-                                    .............................
-                                @endif
+                                <u>{{ $pengajuan->l1Approver->name ?? 'Bapak Manajer' }}</u>
                             </td>
                             <td class="sign-space">
-                                @if($pengajuan->l2Approver)
-                                    <u>{{ $pengajuan->l2Approver->name }}</u>
-                                @else
-                                    .............................
-                                @endif
+                                <u>{{ $pengajuan->l2Approver->name ?? 'Ibu Finance' }}</u>
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-transform: capitalize;">{{ $pengajuan->user->role }}</td>
+                            <td style="text-transform: capitalize;">Staff</td>
                             <td>Manager</td>
                             <td>Finance</td>
                         </tr>
@@ -243,7 +236,7 @@
             <td>2.</td>
             <td>Jabatan</td>
             <td>:</td>
-            <td><span style="text-transform: capitalize;">{{ $pengajuan->user->role }} {{ $pengajuan->user->division ?? '' }}</span></td>
+            <td><span style="text-transform: capitalize;">{{ $pengajuan->user->role }} {{ $pengajuan->user->division ? '- ' . $pengajuan->user->division : '' }}</span></td>
         </tr>
         <tr>
             <td>3.</td>
@@ -284,11 +277,11 @@
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="width: 5%;">1.</td>
-                        <td><div class="input-box">-</div></td>
+                        <td><div class="input-box">{{ $pengajuan->companion_1 ?: '-' }}</div></td>
                     </tr>
                     <tr>
                         <td>2.</td>
-                        <td><div class="input-box" style="margin-top: 3px;">-</div></td>
+                        <td><div class="input-box" style="margin-top: 3px;">{{ $pengajuan->companion_2 ?: '-' }}</div></td>
                     </tr>
                 </table>
             </td>
@@ -298,16 +291,16 @@
             <td>Jenis Transportasi</td>
             <td>:</td>
             <td>
-                <div style="margin-bottom: 2px;"><span class="checkbox-box">X</span> Darat</div>
-                <div style="margin-bottom: 2px;"><span class="checkbox-box">&nbsp;</span> Laut</div>
-                <div><span class="checkbox-box">&nbsp;</span> Udara</div>
+                <div style="margin-bottom: 2px;"><span class="checkbox-box">{{ $pengajuan->transportation_type == 'Darat' ? 'X' : '&nbsp;' }}</span> Darat</div>
+                <div style="margin-bottom: 2px;"><span class="checkbox-box">{{ $pengajuan->transportation_type == 'Laut' ? 'X' : '&nbsp;' }}</span> Laut</div>
+                <div><span class="checkbox-box">{{ $pengajuan->transportation_type == 'Udara' ? 'X' : '&nbsp;' }}</span> Udara</div>
             </td>
         </tr>
         <tr>
             <td>9.</td>
             <td>No. Polisi</td>
             <td>:</td>
-            <td><div class="input-box">Sesuai Lampiran</div></td>
+            <td><div class="input-box">{{ $pengajuan->vehicle_number ?: 'Sesuai Lampiran' }}</div></td>
         </tr>
     </table>
 
@@ -316,6 +309,7 @@
     </div>
 
 
+    <!-- ================= HALAMAN 2 ================= -->
     <div class="page-break"></div>
 
     <div class="clearfix">
@@ -336,12 +330,12 @@
                             <th>Disetujui Oleh</th>
                         </tr>
                         <tr>
-                            <td class="sign-space"><u>{{ $pengajuan->user->name }}</u></td>
-                            <td class="sign-space"><u>{{ $pengajuan->l1Approver->name ?? '...................' }}</u></td>
-                            <td class="sign-space"><u>{{ $pengajuan->l2Approver->name ?? '...................' }}</u></td>
+                            <td class="sign-space"><u>{{ $pengajuan->user->name ?? 'Staff Pegawai' }}</u></td>
+                            <td class="sign-space"><u>{{ $pengajuan->l1Approver->name ?? 'Bapak Manajer' }}</u></td>
+                            <td class="sign-space"><u>{{ $pengajuan->l2Approver->name ?? 'Ibu Finance' }}</u></td>
                         </tr>
                         <tr>
-                            <td style="text-transform: capitalize;">{{ $pengajuan->user->role }}</td>
+                            <td style="text-transform: capitalize;">Staff</td>
                             <td>Manager</td>
                             <td>Finance</td>
                         </tr>
@@ -350,6 +344,12 @@
             </tr>
         </table>
     </div>
+
+    @php
+        $total = $pengajuan->total_biaya ?? 0;
+        $panjar = $total * 0.5; // Menghitung Panjar 50%
+        $sisa = $total - $panjar; // Menghitung sisa klaim
+    @endphp
 
     <table class="table-biaya">
         <thead>
@@ -365,32 +365,32 @@
                 <td>1</td>
                 <td class="text-left">BIAYA BAHAN BAKAR / TIKET</td>
                 <td>Transportasi</td>
-                <td class="text-right">Menyesuaikan</td>
+                <td class="text-right">Rp. {{ number_format($pengajuan->biaya_bensin ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>2</td>
                 <td class="text-left">BIAYA KONSUMSI</td>
                 <td>Makan</td>
-                <td class="text-right">Menyesuaikan</td>
+                <td class="text-right">Rp. {{ number_format($pengajuan->biaya_makan ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>3</td>
                 <td class="text-left">BIAYA PENGINAPAN</td>
                 <td>Akomodasi (Hotel)</td>
-                <td class="text-right">Menyesuaikan</td>
+                <td class="text-right">Rp. {{ number_format($pengajuan->biaya_penginapan ?? 0, 0, ',', '.') }}</td>
             </tr>
             
             <tr>
                 <td colspan="3" class="text-left bg-gray">TOTAL ESTIMASI BIAYA PERJALANAN</td>
-                <td class="text-right bg-gray">Menunggu Nota</td>
+                <td class="text-right bg-gray">Rp. {{ number_format($total, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="3" class="text-left bg-gray">PANJAR BIAYA 50%</td>
-                <td class="text-right"></td>
+                <td class="text-right fw-bold">Rp. {{ number_format($panjar, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="3" class="text-left bg-gray">SISA BIAYA KLAIM PERJALANAN</td>
-                <td class="text-right"></td>
+                <td class="text-right fw-bold">Rp. {{ number_format($sisa, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>

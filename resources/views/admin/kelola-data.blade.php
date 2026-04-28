@@ -111,7 +111,9 @@
         
         <aside class="sidebar" id="sidebar">
             <div class="logo-area">
-                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
+                <a href="{{ route('admin.dashboard') ?? '#' }}">
+                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
+                </a>
             </div>
 
             <ul class="sidebar-menu">
@@ -133,7 +135,7 @@
             <header class="top-navbar">
                 <div class="nav-left">
                     <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3">Data Pengguna</h5>
+                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Data Pengguna</h5>
                 </div>
                 <div class="nav-right">
                     <div class="user-profile">
@@ -194,7 +196,8 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            </tbody>
+                            <!-- Data akan dimuat dari JS -->
+                        </tbody>
                     </table>
                 </div>
 
@@ -202,6 +205,7 @@
         </div>
     </div>
 
+    <!-- PANEL GESER OFFCANVAS -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="panelPengguna">
         <div class="offcanvas-header border-bottom p-4">
             <h5 class="offcanvas-title fw-bold" id="panelTitle">Tambah Pengguna Baru</h5>
@@ -236,6 +240,7 @@
                         <input type="text" class="form-control" name="employee_id" placeholder="Contoh: EMP-001">
                     </div>
 
+                    <!-- DROPDOWN DIVISI BARU -->
                     <div class="col-md-6">
                         <label class="form-label">Divisi <span class="text-danger">*</span></label>
                         <select class="form-select" name="division" required>
@@ -251,6 +256,7 @@
                         </select>
                     </div>
                     
+                    <!-- DROPDOWN JABATAN BARU -->
                     <div class="col-md-6">
                         <label class="form-label">Jabatan <span class="text-danger">*</span></label>
                         <select class="form-select" name="role" required>
@@ -271,6 +277,7 @@
                         <input type="text" class="form-control" name="phone" placeholder="08xxx">
                     </div>
 
+                    <!-- INFORMASI REKENING BANK -->
                     <div class="col-12 mt-4">
                         <h6 class="fw-bold mb-2" style="color: var(--primary-blue);"><i class="fas fa-university me-2"></i>Informasi Rekening Bank</h6>
                         <hr class="mt-0 mb-3">
@@ -305,12 +312,14 @@
                 </div>
 
                 <div class="mt-5 pt-3 border-top" id="actionButtons">
-                    </div>
+                    <!-- Tombol akan dimuat secara dinamis melalui JS -->
+                </div>
             </form>
 
         </div>
     </div>
 
+    <!-- PENTING: Panggil library SweetAlert2 untuk Popup -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -352,7 +361,7 @@
                     if(user.role === 'manager') badgeClass = 'bg-manager';
                     
                     let row = `
-                        <tr data-bs-toggle="offcanvas" data-bs-target="#panelPengguna" onclick="loadDetailData(${user.id})">
+                        <tr style="cursor: pointer;" onclick="loadDetailData(${user.id})">
                             <td>
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
@@ -407,6 +416,11 @@
         // --- MODE: LIHAT DETAIL ---
         async function loadDetailData(id) {
             document.getElementById('panelTitle').innerText = 'Memuat Data...';
+            
+            // Tampilkan panel
+            const panel = document.getElementById('panelPengguna');
+            const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(panel);
+            bsOffcanvas.show();
             
             try {
                 const response = await fetch(`/admin/api/users/${id}`);
