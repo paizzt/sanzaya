@@ -46,7 +46,7 @@
         .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
+        .nav-right { display: flex; align-items: center; gap: 25px; position: relative; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .user-info { text-align: right; line-height: 1.2; }
         .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
@@ -73,6 +73,64 @@
         .btn-outline-custom { border: 1px solid var(--border-color); background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
         .btn-outline-custom:hover { background: #F8F9FA; border-color: #CCC; }
 
+        /* --- NOTIFIKASI DROPDOWN --- */
+        .nav-icon { position: relative; cursor: pointer; }
+        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
+        .badge-dot.active { display: block; }
+        
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 320px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .notification-dropdown.show { display: block; }
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: #FAFAFA;
+        }
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: background-color 0.2s;
+        }
+        .notification-item:hover { background-color: #F8FAFC; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .notif-manager { background-color: #FFFBEB; color: #D97706; }
+        
+        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+        .notification-content span { font-size: 11px; color: var(--text-gray); }
+
         /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
         
@@ -89,11 +147,24 @@
 </head>
 <body>
 
+    <!-- MENGAMBIL DATA NOTIFIKASI MANAJER (Pending L1) -->
+    @php
+        $userId = \Illuminate\Support\Facades\Auth::id();
+        
+        // Logika Notifikasi khusus Manajer (Melihat SPPD yang pending_l1)
+        $notifications = \App\Models\TravelRequest::with('user')
+            ->where('status', 'pending_l1')
+            ->latest()
+            ->take(5)
+            ->get();
+        $hasNewNotif = $notifications->count() > 0;
+    @endphp
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="wrapper">
         
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR MANAGER -->
         <aside class="sidebar" id="sidebar">
             <div class="logo-area">
                 <a href="{{ route('manager.dashboard') ?? '#' }}">
@@ -103,9 +174,9 @@
 
             <ul class="sidebar-menu">
                 <li><a href="{{ route('manager.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan UC</span></a></li>
+                <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan SPPD</span></a></li>
                 <li><a href="{{ route('manager.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Proses</span></a></li>
-                <!-- Jika Manager boleh buat pengajuan, menu ini dimunculkan -->
+                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
                 <li><a href="{{ route('manager.pengajuan.create') ?? '#' }}" class="menu-item"><i class="fas fa-paper-plane menu-icon"></i><span class="menu-text">Buat Pengajuan</span></a></li>
                 <li><a href="{{ route('manager.settings') ?? '#' }}" class="menu-item active"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
             </ul>
@@ -126,7 +197,34 @@
                     <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Pengaturan Akun Manajer</h5>
                 </div>
                 <div class="nav-right">
-                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
+                    
+                    <!-- AREA NOTIFIKASI -->
+                    <div class="nav-icon" id="notificationToggle">
+                        <i class="far fa-bell" style="font-size: 20px;"></i>
+                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
+                        
+                        <!-- DROPDOWN NOTIFIKASI MANAJER -->
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                Notifikasi Terkini
+                            </div>
+                            <ul class="notification-list">
+                                @forelse($notifications as $notif)
+                                    <li class="notification-item" onclick="window.location.href='{{ route('approvals.show', $notif->id) }}'" style="cursor: pointer;">
+                                        <div class="notification-icon notif-manager"><i class="fas fa-file-signature"></i></div>
+                                        <div class="notification-content">
+                                            <p>Pengajuan UC baru dari <strong>{{ $notif->user->name ?? 'Staff' }}</strong> ({{ $notif->destination }}) menunggu persetujuan Anda.</p>
+                                            <span>{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Tidak ada pengajuan baru yang menunggu persetujuan.</p></div></li>
+                                @endforelse
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END AREA NOTIFIKASI -->
+
                     <div class="user-profile">
                         <div class="user-info">
                             <p class="user-name">{{ Auth::user()->name ?? 'Nama Manajer' }}</p>
@@ -251,6 +349,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
+        // --- LOGIKA NOTIFIKASI DROPDOWN ---
+        const notificationToggle = document.getElementById('notificationToggle');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const badgeDot = document.querySelector('.badge-dot');
+
+        if(notificationToggle) {
+            notificationToggle.addEventListener('click', function(event) {
+                event.stopPropagation(); // Mencegah klik menyebar ke window
+                notificationDropdown.classList.toggle('show');
+                // Jika dropdown dibuka, sembunyikan titik merah
+                if(notificationDropdown.classList.contains('show') && badgeDot) {
+                    badgeDot.classList.remove('active');
+                }
+            });
+
+            // Tutup dropdown jika klik di luar area
+            window.addEventListener('click', function(event) {
+                if (!notificationToggle.contains(event.target)) {
+                    notificationDropdown.classList.remove('show');
+                }
+            });
+        }
+
         // --- LOGIKA RESPONSIVE SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');

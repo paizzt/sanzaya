@@ -44,6 +44,68 @@
         .sidebar.collapsed .sidebar-footer { padding: 20px 10px; }
         .sidebar.collapsed .btn-create span { display: none; }
 
+        /* --- NOTIFIKASI DROPDOWN --- */
+        .nav-icon { position: relative; cursor: pointer; }
+        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
+        .badge-dot.active { display: block; }
+        
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 320px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .notification-dropdown.show { display: block; }
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: #FAFAFA;
+        }
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: background-color 0.2s;
+        }
+        .notification-item:hover { background-color: #F8FAFC; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .notif-success { background-color: #ECFDF5; color: #10B981; }
+        .notif-warning { background-color: #FFFBEB; color: #D97706; }
+        .notif-danger { background-color: #FEF2F2; color: #EF4444; }
+        .notif-info { background-color: #EFF6FF; color: #3B82F6; }
+
+        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+        .notification-content span { font-size: 11px; color: var(--text-gray); }
+
         /* --- MAIN CONTENT & NAVBAR --- */
         .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
         .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
@@ -93,6 +155,18 @@
 </head>
 <body>
 
+    <!-- MENGAMBIL DATA NOTIFIKASI STAFF -->
+    @php
+        $userId = \Illuminate\Support\Facades\Auth::id();
+        
+        // Logika Notifikasi khusus Staff
+        $notifications = \App\Models\TravelRequest::where('user_id', $userId)
+                            ->orderBy('updated_at', 'desc')
+                            ->take(5)
+                            ->get();
+        $hasNewNotif = $notifications->count() > 0;
+    @endphp
+
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="wrapper">
@@ -129,7 +203,45 @@
                     <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Pengaturan Akun</h5>
                 </div>
                 <div class="nav-right">
-                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
+                    
+                    <!-- AREA NOTIFIKASI -->
+                    <div class="nav-icon" id="notificationToggle">
+                        <i class="far fa-bell" style="font-size: 20px;"></i>
+                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
+                        
+                        <!-- DROPDOWN NOTIFIKASI STAFF -->
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                Notifikasi Pengajuan Saya
+                            </div>
+                            <ul class="notification-list">
+                                @forelse($notifications as $notif)
+                                    @php
+                                        // Set style notif berdasarkan status
+                                        $notifIcon = 'fa-file-alt';
+                                        $notifClass = 'notif-info';
+                                        $statusText = 'Sedang diproses';
+                                        
+                                        if($notif->status == 'pending_l1') { $notifClass = 'notif-warning'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
+                                        if($notif->status == 'pending_l2') { $notifClass = 'notif-info'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
+                                        if($notif->status == 'approved') { $notifClass = 'notif-success'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
+                                        if($notif->status == 'rejected') { $notifClass = 'notif-danger'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
+                                    @endphp
+                                    <li class="notification-item" onclick="window.location.href='{{ route('staff.riwayat') ?? '#' }}'" style="cursor: pointer;">
+                                        <div class="notification-icon {{ $notifClass }}"><i class="fas {{ $notifIcon }}"></i></div>
+                                        <div class="notification-content">
+                                            <p>Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span style="color: var(--text-dark); font-weight: 500;">{{ $statusText }}</span></p>
+                                            <span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada pembaruan status.</p></div></li>
+                                @endforelse
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END AREA NOTIFIKASI -->
+
                     <div class="user-profile">
                         <div class="user-info">
                             <p class="user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
@@ -254,6 +366,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
+        // --- LOGIKA NOTIFIKASI DROPDOWN ---
+        const notificationToggle = document.getElementById('notificationToggle');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const badgeDot = document.querySelector('.badge-dot');
+
+        if(notificationToggle) {
+            notificationToggle.addEventListener('click', function(event) {
+                event.stopPropagation(); // Mencegah klik menyebar ke window
+                notificationDropdown.classList.toggle('show');
+                // Jika dropdown dibuka, sembunyikan titik merah
+                if(notificationDropdown.classList.contains('show') && badgeDot) {
+                    badgeDot.classList.remove('active');
+                }
+            });
+
+            // Tutup dropdown jika klik di luar area
+            window.addEventListener('click', function(event) {
+                if (!notificationToggle.contains(event.target)) {
+                    notificationDropdown.classList.remove('show');
+                }
+            });
+        }
+
         // --- LOGIKA RESPONSIVE SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');

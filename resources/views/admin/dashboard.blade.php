@@ -45,7 +45,7 @@
         .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
+        .nav-right { display: flex; align-items: center; gap: 25px; position: relative; } /* Tambah relative untuk dropdown */
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .user-info { text-align: right; line-height: 1.2; }
         .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
@@ -67,7 +67,7 @@
         .stat-info h3 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin: 0; }
         .stat-info p { font-size: 13px; font-weight: 500; color: var(--text-gray); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* --- LIST CARD (Pengguna Terbaru & UC) --- */
+        /* --- LIST CARD (Pengguna Terbaru & SPPD) --- */
         .list-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 25px; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .list-card-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
         
@@ -77,6 +77,64 @@
         .item-avatar { width: 40px; height: 40px; border-radius: 50%; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--primary-blue); font-size: 14px; }
         
         .badge-status { font-size: 11px; padding: 5px 10px; border-radius: 6px; font-weight: 600; }
+
+        /* --- NOTIFIKASI DROPDOWN --- */
+        .nav-icon { position: relative; cursor: pointer; }
+        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
+        .badge-dot.active { display: block; }
+        
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 300px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .notification-dropdown.show { display: block; }
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: #FAFAFA;
+        }
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: background-color 0.2s;
+        }
+        .notification-item:hover { background-color: #F8FAFC; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .notif-admin { background-color: #EFF6FF; color: #3B82F6; }
+        
+        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+        .notification-content span { font-size: 11px; color: var(--text-gray); }
 
         /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
@@ -94,15 +152,23 @@
 </head>
 <body>
 
-    <!-- MENGAMBIL DATA STATISTIK LANGSUNG (DROP-IN REPLACEMENT) -->
+    <!-- MENGAMBIL DATA STATISTIK DAN NOTIFIKASI LANGSUNG -->
     @php
         $totalUsers = \App\Models\User::count();
-        $totalUC = \App\Models\TravelRequest::count();
-        $pendingUC = \App\Models\TravelRequest::whereIn('status', ['pending_l1', 'pending_l2'])->count();
-        $approvedUC = \App\Models\TravelRequest::where('status', 'approved')->count();
+        $totalSppd = \App\Models\TravelRequest::count();
+        $pendingSppd = \App\Models\TravelRequest::whereIn('status', ['pending_l1', 'pending_l2'])->count();
+        $approvedSppd = \App\Models\TravelRequest::where('status', 'approved')->count();
 
         $recentUsers = \App\Models\User::orderBy('created_at', 'desc')->take(5)->get();
-        $recentUC = \App\Models\TravelRequest::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        $recentSppd = \App\Models\TravelRequest::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        
+        // Logika Data Notifikasi Admin
+        $notifications = collect();
+        $hasNewNotif = false;
+        if(class_exists('\App\Models\ActivityLog')) {
+            $notifications = \App\Models\ActivityLog::with('user')->latest()->take(5)->get();
+            $hasNewNotif = $notifications->count() > 0;
+        }
     @endphp
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -121,7 +187,7 @@
                 <li><a href="{{ route('admin.dashboard') ?? '#' }}" class="menu-item active"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
                 <li><a href="{{ route('admin.riwayat.perubahan') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Perubahan</span></a></li>
                 <li><a href="{{ route('admin.users.index') ?? '#' }}" class="menu-item"><i class="fas fa-users menu-icon"></i><span class="menu-text">Kelola data</span></a></li>
-                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip UC</span></a></li>
+                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip Seluruh Sistem</span></a></li>
                 <li><a href="{{ route('admin.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
             </ul>
 
@@ -141,7 +207,34 @@
                     <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Beranda Administrator</h5>
                 </div>
                 <div class="nav-right">
-                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
+                    
+                    <!-- AREA NOTIFIKASI -->
+                    <div class="nav-icon" id="notificationToggle">
+                        <i class="far fa-bell" style="font-size: 20px;"></i>
+                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
+                        
+                        <!-- DROPDOWN NOTIFIKASI -->
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                Notifikasi Terkini
+                            </div>
+                            <ul class="notification-list">
+                                @forelse($notifications as $log)
+                                    <li class="notification-item">
+                                        <div class="notification-icon notif-admin"><i class="fas fa-history"></i></div>
+                                        <div class="notification-content">
+                                            <p><strong>{{ $log->user->name ?? 'Sistem' }}</strong>: {{ $log->description }}</p>
+                                            <span>{{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}</span>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada riwayat aktivitas.</p></div></li>
+                                @endforelse
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END AREA NOTIFIKASI -->
+
                     <div class="user-profile">
                         <div class="user-info">
                             <p class="user-name">{{ Auth::user()->name ?? 'Admin Name' }}</p>
@@ -179,8 +272,8 @@
                         <div class="stat-card card-purple">
                             <div class="stat-icon"><i class="fas fa-file-invoice"></i></div>
                             <div class="stat-info">
-                                <h3>{{ $totalUC }}</h3>
-                                <p>Total UC</p>
+                                <h3>{{ $totalSppd }}</h3>
+                                <p>Total SPPD</p>
                             </div>
                         </div>
                     </div>
@@ -188,7 +281,7 @@
                         <div class="stat-card card-orange">
                             <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
                             <div class="stat-info">
-                                <h3>{{ $pendingUC }}</h3>
+                                <h3>{{ $pendingSppd }}</h3>
                                 <p>Proses Validasi</p>
                             </div>
                         </div>
@@ -197,8 +290,8 @@
                         <div class="stat-card card-green">
                             <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
                             <div class="stat-info">
-                                <h3>{{ $approvedUC }}</h3>
-                                <p>UC Selesai</p>
+                                <h3>{{ $approvedSppd }}</h3>
+                                <p>SPPD Selesai</p>
                             </div>
                         </div>
                     </div>
@@ -237,38 +330,38 @@
                         </div>
                     </div>
 
-                    <!-- UC TERBARU -->
+                    <!-- SPPD TERBARU -->
                     <div class="col-lg-6">
                         <div class="list-card">
                             <div class="list-card-title">
-                                <span><i class="fas fa-paper-plane text-success me-2"></i> Pengajuan UC Terbaru</span>
+                                <span><i class="fas fa-paper-plane text-success me-2"></i> Pengajuan SPPD Terbaru</span>
                             </div>
                             
                             <div class="list-container">
-                                @forelse($recentUC as $UC)
+                                @forelse($recentSppd as $sppd)
                                 <div class="list-item">
                                     <div class="item-left">
                                         <div class="item-avatar" style="background: #ECFDF5; color: #10B981;"><i class="fas fa-car-side"></i></div>
                                         <div>
-                                            <p class="m-0 fw-bold text-dark" style="font-size: 13px;">Tujuan: {{ $UC->destination }}</p>
-                                            <p class="m-0 text-muted" style="font-size: 11px;">Oleh: {{ $UC->user->name ?? 'User Dihapus' }}</p>
+                                            <p class="m-0 fw-bold text-dark" style="font-size: 13px;">Tujuan: {{ $sppd->destination }}</p>
+                                            <p class="m-0 text-muted" style="font-size: 11px;">Oleh: {{ $sppd->user->name ?? 'User Dihapus' }}</p>
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        @if($UC->status == 'pending_l1')
+                                        @if($sppd->status == 'pending_l1')
                                             <span class="badge-status bg-warning text-dark border border-warning" style="background-color: #FFFBEB !important; color: #B45309 !important;">Cek Manajer</span>
-                                        @elseif($UC->status == 'pending_l2')
+                                        @elseif($sppd->status == 'pending_l2')
                                             <span class="badge-status bg-info text-dark border border-info" style="background-color: #EFF6FF !important; color: #1D4ED8 !important;">Cek Finance</span>
-                                        @elseif($UC->status == 'approved')
+                                        @elseif($sppd->status == 'approved')
                                             <span class="badge-status bg-success text-dark border border-success" style="background-color: #ECFDF5 !important; color: #047857 !important;">Selesai</span>
-                                        @elseif($UC->status == 'rejected')
+                                        @elseif($sppd->status == 'rejected')
                                             <span class="badge-status bg-danger text-dark border border-danger" style="background-color: #FEF2F2 !important; color: #B91C1C !important;">Ditolak</span>
                                         @endif
-                                        <p class="m-0 text-muted mt-1" style="font-size: 10px;">{{ \Carbon\Carbon::parse($UC->created_at)->format('d M') }}</p>
+                                        <p class="m-0 text-muted mt-1" style="font-size: 10px;">{{ \Carbon\Carbon::parse($sppd->created_at)->format('d M') }}</p>
                                     </div>
                                 </div>
                                 @empty
-                                <div class="text-center py-4 text-muted small">Belum ada riwayat pengajuan UC.</div>
+                                <div class="text-center py-4 text-muted small">Belum ada riwayat pengajuan SPPD.</div>
                                 @endforelse
                             </div>
                         </div>
@@ -283,6 +376,27 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // --- LOGIKA NOTIFIKASI DROPDOWN ---
+        const notificationToggle = document.getElementById('notificationToggle');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const badgeDot = document.querySelector('.badge-dot');
+
+        notificationToggle.addEventListener('click', function(event) {
+            event.stopPropagation(); // Mencegah klik menyebar ke window
+            notificationDropdown.classList.toggle('show');
+            // Jika dropdown dibuka, sembunyikan titik merah (opsional, tandanya sudah dibaca)
+            if(notificationDropdown.classList.contains('show') && badgeDot) {
+                badgeDot.classList.remove('active');
+            }
+        });
+
+        // Tutup dropdown jika klik di luar area
+        window.addEventListener('click', function(event) {
+            if (!notificationToggle.contains(event.target)) {
+                notificationDropdown.classList.remove('show');
+            }
+        });
+
         // --- LOGIKA RESPONSIVE SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');

@@ -45,7 +45,7 @@
         .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .nav-left { display: flex; align-items: center; gap: 20px; }
         .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
+        .nav-right { display: flex; align-items: center; gap: 25px; position: relative; } /* Tambah relative untuk dropdown */
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .user-info { text-align: right; line-height: 1.2; }
         .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
@@ -75,6 +75,66 @@
         .btn-review { background-color: #F8FAFC; color: var(--primary-blue); border: 1px solid #CBD5E1; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; }
         .btn-review:hover { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
 
+        /* --- NOTIFIKASI DROPDOWN --- */
+        .nav-icon { position: relative; cursor: pointer; }
+        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
+        .badge-dot.active { display: block; }
+        
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 300px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        .notification-dropdown.show { display: block; }
+        .notification-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-dark);
+            background-color: #FAFAFA;
+        }
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: background-color 0.2s;
+        }
+        .notification-item:hover { background-color: #F8FAFC; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .notif-admin { background-color: #EFF6FF; color: #3B82F6; }
+        .notif-manager { background-color: #FFFBEB; color: #D97706; }
+        .notif-finance { background-color: #ECFDF5; color: #10B981; }
+        
+        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
+        .notification-content span { font-size: 11px; color: var(--text-gray); }
+
         /* --- RESPONSIVE --- */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
         
@@ -91,11 +151,36 @@
 </head>
 <body>
 
-    <!-- MENGAMBIL SELURUH DATA ARSIP -->
+    <!-- MENGAMBIL SELURUH DATA ARSIP DAN NOTIFIKASI -->
     @php
         $userRole = strtolower(trim(Auth::user()->role));
-        // Tarik semua data dari semua pengguna
+        // Tarik semua data arsip
         $requests = \App\Models\TravelRequest::with('user')->orderBy('created_at', 'desc')->get();
+        
+        // Logika Data Notifikasi Berdasarkan Role
+        $notifications = collect();
+        $hasNewNotif = false;
+
+        if ($userRole === 'admin') {
+            if(class_exists('\App\Models\ActivityLog')) {
+                $notifications = \App\Models\ActivityLog::with('user')->latest()->take(5)->get();
+                $hasNewNotif = $notifications->count() > 0;
+            }
+        } elseif (in_array($userRole, ['manager', 'hrd', 'kepala marketing'])) {
+            $notifications = \App\Models\TravelRequest::with('user')
+                ->where('status', 'pending_l1')
+                ->latest()
+                ->take(5)
+                ->get();
+            $hasNewNotif = $notifications->count() > 0;
+        } elseif ($userRole === 'finance') {
+            $notifications = \App\Models\TravelRequest::with('user')
+                ->where('status', 'pending_l2')
+                ->latest()
+                ->take(5)
+                ->get();
+            $hasNewNotif = $notifications->count() > 0;
+        }
     @endphp
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -111,7 +196,13 @@
             </div>
 
             <ul class="sidebar-menu">
-                @if(in_array($userRole, ['manager', 'hrd', 'kepala marketing']))
+                @if($userRole === 'admin')
+                    <li><a href="{{ route('admin.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
+                    <li><a href="{{ route('admin.riwayat.perubahan') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Perubahan</span></a></li>
+                    <li><a href="{{ route('admin.users.index') ?? '#' }}" class="menu-item"><i class="fas fa-users menu-icon"></i><span class="menu-text">Kelola data</span></a></li>
+                    <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item active"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip Seluruh Sistem</span></a></li>
+                    <li><a href="{{ route('admin.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
+                @elseif(in_array($userRole, ['manager', 'hrd', 'kepala marketing']))
                     <li><a href="{{ route('manager.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
                     <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan SPPD</span></a></li>
                     <li><a href="{{ route('manager.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Proses</span></a></li>
@@ -143,7 +234,60 @@
                     <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Arsip Seluruh Dokumen UC</h5>
                 </div>
                 <div class="nav-right">
-                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
+                    
+                    <!-- AREA NOTIFIKASI -->
+                    <div class="nav-icon" id="notificationToggle">
+                        <i class="far fa-bell" style="font-size: 20px;"></i>
+                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
+                        
+                        <!-- DROPDOWN NOTIFIKASI -->
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                Notifikasi Terkini
+                            </div>
+                            <ul class="notification-list">
+                                @if($userRole === 'admin')
+                                    @forelse($notifications as $log)
+                                        <li class="notification-item">
+                                            <div class="notification-icon notif-admin"><i class="fas fa-history"></i></div>
+                                            <div class="notification-content">
+                                                <p><strong>{{ $log->user->name ?? 'Sistem' }}</strong>: {{ $log->description }}</p>
+                                                <span>{{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}</span>
+                                            </div>
+                                        </li>
+                                    @empty
+                                        <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada riwayat aktivitas.</p></div></li>
+                                    @endforelse
+                                @elseif(in_array($userRole, ['manager', 'hrd', 'kepala marketing']))
+                                    @forelse($notifications as $notif)
+                                        <li class="notification-item" onclick="window.location.href='{{ route('approvals.show', $notif->id) }}'" style="cursor: pointer;">
+                                            <div class="notification-icon notif-manager"><i class="fas fa-file-signature"></i></div>
+                                            <div class="notification-content">
+                                                <p>Pengajuan UC baru dari <strong>{{ $notif->user->name ?? 'Staff' }}</strong> ({{ $notif->destination }}) menunggu persetujuan Anda.</p>
+                                                <span>{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</span>
+                                            </div>
+                                        </li>
+                                    @empty
+                                        <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Tidak ada pengajuan baru.</p></div></li>
+                                    @endforelse
+                                @elseif($userRole === 'finance')
+                                    @forelse($notifications as $notif)
+                                        <li class="notification-item" onclick="window.location.href='{{ route('approvals.show', $notif->id) }}'" style="cursor: pointer;">
+                                            <div class="notification-icon notif-finance"><i class="fas fa-file-invoice-dollar"></i></div>
+                                            <div class="notification-content">
+                                                <p>Pengajuan UC <strong>{{ $notif->user->name ?? 'Staff' }}</strong> ({{ $notif->destination }}) telah disetujui Manajer dan menunggu pencairan dana.</p>
+                                                <span>{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span>
+                                            </div>
+                                        </li>
+                                    @empty
+                                        <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Tidak ada dokumen untuk dicairkan.</p></div></li>
+                                    @endforelse
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END AREA NOTIFIKASI -->
+
                     <div class="user-profile">
                         <div class="user-info">
                             <p class="user-name">{{ Auth::user()->name ?? 'Nama User' }}</p>
@@ -264,6 +408,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // --- LOGIKA NOTIFIKASI DROPDOWN ---
+        const notificationToggle = document.getElementById('notificationToggle');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const badgeDot = document.querySelector('.badge-dot');
+
+        notificationToggle.addEventListener('click', function(event) {
+            event.stopPropagation(); // Mencegah klik menyebar ke window
+            notificationDropdown.classList.toggle('show');
+            // Jika dropdown dibuka, sembunyikan titik merah (opsional, tandanya sudah dibaca)
+            if(notificationDropdown.classList.contains('show') && badgeDot) {
+                badgeDot.classList.remove('active');
+            }
+        });
+
+        // Tutup dropdown jika klik di luar area
+        window.addEventListener('click', function(event) {
+            if (!notificationToggle.contains(event.target)) {
+                notificationDropdown.classList.remove('show');
+            }
+        });
+
         // --- LOGIKA RESPONSIVE SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
