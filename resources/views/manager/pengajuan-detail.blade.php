@@ -5,103 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Pengajuan UC Manajer - Satu Sanzaya</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --primary-blue: #0A539B;
-            --light-blue: #E5F0FF;
-            --sidebar-bg: #FAFAFA;
-            --text-dark: #333333;
-            --text-gray: #888888;
-            --border-color: #EAEAEA;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px; 
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
         }
+    </script>
 
-        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
-        .wrapper { display: flex; height: 100vh; }
-
-        /* --- SIDEBAR KONSISTEN --- */
-        .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
-        .logo-img { max-width: 140px; transition: 0.3s; }
-        .sidebar.collapsed .logo-img { max-width: 40px; }
-        .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
-        .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
-        .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
-        .menu-text { margin-left: 15px; transition: opacity 0.2s; }
-        .sidebar.collapsed .menu-text { opacity: 0; display: none; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
-
-        /* --- MAIN CONTENT & NAVBAR --- */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
-        .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-info { text-align: right; line-height: 1.2; }
-        .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: capitalize; }
-        .user-avatar { font-size: 32px; color: var(--primary-blue); }
-        .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
-
-        /* --- STYLING DETAIL --- */
-        .detail-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        .section-title { font-size: 15px; font-weight: 700; color: var(--primary-blue); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    <style>
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .info-group { margin-bottom: 20px; }
-        .info-label { font-size: 12px; font-weight: 600; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        .info-value { font-size: 15px; font-weight: 600; color: var(--text-dark); background-color: #F8FAFC; padding: 12px 16px; border-radius: 10px; border: 1px solid #E2E8F0; }
-
-        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--text-gray); font-weight: 600; text-decoration: none; margin-bottom: 20px; transition: 0.2s; }
-        .btn-back:hover { color: var(--primary-blue); }
-
-        /* --- STEPPER TRACKING --- */
-        .stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 40px; margin-top: 20px; position: relative; }
-        .stepper-item { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; z-index: 1; }
-        .stepper-item::before { position: absolute; content: ""; border-bottom: 3px solid #E2E8F0; width: 100%; top: 20px; left: -50%; z-index: -1; }
-        .stepper-item:first-child::before { content: none; }
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .step-counter { position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; width: 45px; height: 45px; border-radius: 50%; background: #E2E8F0; color: #64748B; font-weight: bold; margin-bottom: 10px; border: 3px solid white; transition: all 0.3s ease; }
-        .step-name { font-size: 13px; font-weight: 600; color: #64748B; text-align: center; }
-        
-        .stepper-item.completed .step-counter { background-color: #10B981; color: white; }
-        .stepper-item.completed .step-name { color: #10B981; }
-        .stepper-item.completed::before { border-bottom-color: #10B981; }
-        
-        .stepper-item.active .step-counter { background-color: var(--primary-blue); color: white; box-shadow: 0 0 0 4px rgba(10,83,155,0.2); }
-        .stepper-item.active .step-name { color: var(--primary-blue); }
-        .stepper-item.active::before { border-bottom-color: #10B981; } /* Garis sebelumnya hijau */
+        /* Smooth transitions */
+        .transition-all-ease { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .stepper-item.rejected .step-counter { background-color: #EF4444; color: white; box-shadow: 0 0 0 4px rgba(239,68,68,0.2); }
-        .stepper-item.rejected .step-name { color: #EF4444; }
-
-        /* --- RESPONSIVE --- */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
-        
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            .sidebar.mobile-active { left: 0; }
-            .sidebar-overlay.active { display: block; }
-            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
-            .top-navbar { padding: 0 20px; }
-            .content-area { padding: 20px; }
-            .user-role { display: none; }
-            .step-name { font-size: 11px; }
+        /* --- DESKTOP COLLAPSE SIDEBAR STYLES --- */
+        @media (min-width: 1024px) {
+            .sidebar.collapsed { width: 88px !important; }
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .sidebar-title,
+            .sidebar.collapsed .badge-count { display: none; opacity: 0; }
+            .sidebar.collapsed .menu-item { justify-content: center; padding-left: 0; padding-right: 0; margin-left: 0.75rem; margin-right: 0.75rem; }
+            .sidebar.collapsed .menu-item i { margin-right: 0 !important; }
+            .sidebar.collapsed .logo-img { max-width: 40px; }
         }
     </style>
 </head>
-<body>
+<body class="bg-surface text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
 
+    <!-- MENGAMBIL DATA PENGAJUAN & NOTIFIKASI -->
     @php
+        $userId = \Illuminate\Support\Facades\Auth::id();
+        
+        // Logika Notifikasi khusus Manajer (Melihat SPPD yang pending_l1)
+        $notifications = \App\Models\TravelRequest::with('user')
+            ->where('status', 'pending_l1')
+            ->latest()
+            ->take(5)
+            ->get();
+        $hasNewNotif = $notifications->count() > 0;
+
         // Mengambil data pengajuan (fallback jika tidak dikirim dari controller)
         if(!isset($pengajuan)) {
             // Ambil pengajuan terakhir dari manajer yang login
@@ -109,181 +91,313 @@
         }
     @endphp
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
-    <div class="wrapper">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar bg-white w-[280px] h-full border-r border-slate-200 flex flex-col transition-all-ease fixed lg:relative z-50 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <!-- SIDEBAR MANAGER -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo-area">
-                <a href="{{ route('manager.dashboard') ?? '#' }}">
-                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
-                </a>
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-slate-100 px-6 logo-area overflow-hidden">
+            <a href="{{ route('manager.dashboard') ?? '#' }}" class="flex items-center group">
+                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img max-w-[140px] group-hover:scale-105 transition-all-ease">
+            </a>
+            <button id="closeSidebarBtn" class="lg:hidden absolute right-4 text-slate-400 hover:text-slate-800">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Menu Utama</p>
+            
+            <a href="{{ route('manager.dashboard') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-border-all w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            
+            <a href="{{ route('approvals.index') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-file-signature w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Persetujuan SPPD</span>
+            </a>
+            
+            <a href="{{ route('manager.history') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-history w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Riwayat Proses</span>
+            </a>
+            
+            <a href="{{ route('arsip.index') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-archive w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Arsip UC</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <div class="border-t border-slate-100"></div>
             </div>
+            
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Pribadi</p>
 
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('manager.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('approvals.index') ?? '#' }}" class="menu-item"><i class="fas fa-file-signature menu-icon"></i><span class="menu-text">Persetujuan UC</span></a></li>
-                <li><a href="{{ route('manager.history') ?? '#' }}" class="menu-item"><i class="fas fa-history menu-icon"></i><span class="menu-text">Riwayat Proses</span></a></li>
-                <li><a href="{{ route('manager.pengajuan.create') ?? '#' }}" class="menu-item"><i class="fas fa-paper-plane menu-icon"></i><span class="menu-text">Buat Pengajuan</span></a></li>
-                <li><a href="{{ route('manager.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
-            </ul>
+            <a href="{{ route('manager.pengajuan.create') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl bg-brand-50 text-brand-600 font-medium transition-all-ease group">
+                <i class="fas fa-paper-plane w-5 text-center text-lg mr-3"></i>
+                <span class="menu-text">Buat Pengajuan</span>
+            </a>
+            
+            <a href="{{ route('manager.settings') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-gear w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengaturan Akun</span>
+            </a>
+        </div>
 
-            <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">@csrf</form>
-                <a href="#" class="menu-item" style="color: var(--text-gray);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-arrow-right-from-bracket menu-icon"></i><span class="menu-text">Keluar</span>
-                </a>
-            </div>
-        </aside>
+        <div class="p-4 border-t border-slate-100">
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">@csrf</form>
+            <button onclick="document.getElementById('logout-form').submit();" class="menu-item flex items-center px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 font-medium transition-all-ease group">
+                <i class="fas fa-sign-out-alt w-5 text-center text-lg mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="menu-text">Keluar Sistem</span>
+            </button>
+        </div>
+    </aside>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <header class="top-navbar">
-                <div class="nav-left">
-                    <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Detail Pengajuan Saya</h5>
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-surface relative transition-all-ease">
+        
+        <!-- GLASSMORPHISM NAVBAR -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 transition-all-ease">
+            
+            <div class="flex items-center gap-4 nav-left">
+                <button id="openSidebarBtn" class="hamburger-btn text-slate-500 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-bold text-slate-800">Detail Pengajuan Saya</h1>
                 </div>
-                <div class="nav-right">
-                    <div class="nav-icon"><i class="far fa-bell"></i><div class="badge-dot"></div></div>
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Manajer' }}</p>
-                            <p class="user-role">{{ Auth::user()->role ?? 'manager' }}</p>
+            </div>
+
+            <div class="flex items-center gap-4 lg:gap-6 nav-right">
+                <!-- NOTIFICATION BELL WITH PING -->
+                <div class="relative z-50 nav-icon">
+                    <button id="notifBtn" class="relative p-2.5 text-slate-400 hover:text-brand-600 bg-slate-50 hover:bg-brand-50 rounded-full transition-all-ease focus:outline-none">
+                        <i class="far fa-bell text-xl"></i>
+                        @if($hasNewNotif)
+                            <span class="absolute top-2 right-2.5 flex h-2.5 w-2.5 badge-dot">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white"></span>
+                            </span>
+                        @endif
+                    </button>
+
+                    <!-- DROPDOWN NOTIFIKASI -->
+                    <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible transform translate-y-[-10px] transition-all duration-300 ease-out notification-dropdown">
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center notification-header">
+                            <h3 class="font-semibold text-slate-800">Notifikasi Terkini</h3>
+                            @if($hasNewNotif)
+                                <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2 py-1 rounded-md">{{ $notifications->count() }} Baru</span>
+                            @endif
                         </div>
-                        <i class="fas fa-user-circle user-avatar"></i>
+                        <div class="max-h-[320px] overflow-y-auto no-scrollbar notification-list">
+                            @forelse($notifications as $notif)
+                                <a href="{{ route('approvals.show', $notif->id) }}" class="flex items-start gap-4 p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors group notification-item">
+                                    <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors notification-icon">
+                                        <i class="fas fa-file-signature"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 notification-content">
+                                        <p class="text-sm text-slate-700 leading-snug mb-1">UC dari <span class="font-bold text-slate-900">{{ $notif->user->name ?? 'Staff' }}</span> menunggu ACC Anda.</p>
+                                        <p class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i><span>{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</span></p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="p-8 text-center notification-item">
+                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 notification-icon">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-medium notification-content">Belum ada notifikasi baru.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
-            </header>
 
-            <main class="content-area">
+                <!-- USER PROFILE -->
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 user-profile">
+                    <div class="hidden sm:block text-right user-info">
+                        <p class="text-sm font-bold text-slate-800 leading-tight user-name">{{ Auth::user()->name ?? 'Manajer' }}</p>
+                        <p class="text-xs font-medium text-slate-500 capitalize user-role">{{ Auth::user()->role ?? 'Manager' }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100 user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'M', 0, 1)) }}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar content-area">
+            
+            <div class="max-w-4xl mx-auto">
                 
-                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('manager.history') }}" class="btn-back">
+                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('manager.history') }}" class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-600 transition-colors mb-6">
                     <i class="fas fa-arrow-left"></i> Kembali
                 </a>
 
                 @if(!$pengajuan)
-                    <div class="alert alert-warning d-flex align-items-center" role="alert">
-                        <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+                    <div class="bg-amber-50 border border-amber-200 text-amber-700 p-6 rounded-2xl flex items-center gap-4 shadow-sm">
+                        <i class="fas fa-exclamation-triangle text-3xl"></i>
                         <div>
-                            <strong>Tidak Ada Data!</strong><br>
-                            Anda belum membuat pengajuan perjalanan dinas (UC) apa pun.
+                            <strong class="block text-base mb-1">Tidak Ada Data!</strong>
+                            <span class="text-sm">Anda belum membuat pengajuan perjalanan dinas (UC) apa pun.</span>
                         </div>
                     </div>
                 @else
 
-                <!-- STATUS TRACKER -->
-                <div class="detail-card mb-4 pb-4">
-                    <h5 class="fw-bold mb-4 text-center">Status Pengajuan Anda</h5>
+                <!-- STATUS TRACKER CARD -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 md:p-8 mb-8">
+                    <h5 class="font-bold text-slate-800 mb-8 text-center text-lg">Lacak Status Pengajuan</h5>
                     
-                    <div class="stepper-wrapper">
+                    <div class="relative flex justify-between items-center w-full max-w-2xl mx-auto mt-4 mb-6">
+                        <!-- Connecting Line -->
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 -z-10 rounded-full"></div>
+                        
                         <!-- Step 1: Dibuat -->
-                        <div class="stepper-item completed">
-                            <div class="step-counter"><i class="fas fa-check"></i></div>
-                            <div class="step-name">Dikirim</div>
+                        <div class="flex flex-col items-center relative z-10 flex-1">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-4 border-white transition-all duration-300 bg-emerald-500 text-white shadow-md">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600 mt-3 text-center">Dikirim</span>
                         </div>
                         
                         <!-- Step 2: L1 (Auto Bypass untuk Manajer) -->
-                        <div class="stepper-item completed">
-                            <div class="step-counter"><i class="fas fa-forward"></i></div>
-                            <div class="step-name">Bypass (L1)</div>
+                        <div class="flex flex-col items-center relative z-10 flex-1">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-4 border-white transition-all duration-300 bg-emerald-500 text-white shadow-md">
+                                <i class="fas fa-forward"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600 mt-3 text-center">Bypass (L1)</span>
                         </div>
 
                         <!-- Step 3: Finance (L2) -->
-                        <div class="stepper-item 
-                            {{ $pengajuan->status === 'approved' ? 'completed' : '' }} 
-                            {{ $pengajuan->status === 'pending_l2' ? 'active' : '' }}
-                            {{ $pengajuan->status === 'rejected' ? 'rejected' : '' }}">
-                            <div class="step-counter">
-                                @if($pengajuan->status === 'approved') <i class="fas fa-check"></i>
-                                @elseif($pengajuan->status === 'rejected') <i class="fas fa-times"></i>
-                                @else 3 @endif
+                        <div class="flex flex-col items-center relative z-10 flex-1">
+                            @php
+                                $step3Class = 'bg-slate-200 text-slate-500';
+                                $step3Text = 'text-slate-400';
+                                $step3Icon = '3';
+                                if($pengajuan->status === 'approved' || $pengajuan->status === 'selesai') {
+                                    $step3Class = 'bg-emerald-500 text-white shadow-md';
+                                    $step3Text = 'text-emerald-600';
+                                    $step3Icon = '<i class="fas fa-check"></i>';
+                                } elseif($pengajuan->status === 'pending_l2') {
+                                    $step3Class = 'bg-brand-600 text-white ring-4 ring-brand-100 shadow-md';
+                                    $step3Text = 'text-brand-600';
+                                } elseif($pengajuan->status === 'rejected') {
+                                    $step3Class = 'bg-rose-500 text-white ring-4 ring-rose-100 shadow-md';
+                                    $step3Text = 'text-rose-600';
+                                    $step3Icon = '<i class="fas fa-times"></i>';
+                                }
+                            @endphp
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-4 border-white transition-all duration-300 {{ $step3Class }}">
+                                {!! $step3Icon !!}
                             </div>
-                            <div class="step-name">Finance (L2)</div>
+                            <span class="text-xs font-bold mt-3 text-center {{ $step3Text }}">Finance (L2)</span>
                         </div>
 
                         <!-- Step 4: Selesai -->
-                        <div class="stepper-item {{ $pengajuan->status === 'approved' ? 'completed' : '' }}">
-                            <div class="step-counter">
-                                @if($pengajuan->status === 'approved') <i class="fas fa-flag-checkered"></i>
-                                @else 4 @endif
+                        <div class="flex flex-col items-center relative z-10 flex-1">
+                            @php
+                                $step4Class = 'bg-slate-200 text-slate-500';
+                                $step4Text = 'text-slate-400';
+                                $step4Icon = '4';
+                                if($pengajuan->status === 'selesai' || $pengajuan->status === 'approved') {
+                                    $step4Class = 'bg-emerald-500 text-white shadow-md';
+                                    $step4Text = 'text-emerald-600';
+                                    $step4Icon = '<i class="fas fa-flag-checkered"></i>';
+                                }
+                            @endphp
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-4 border-white transition-all duration-300 {{ $step4Class }}">
+                                {!! $step4Icon !!}
                             </div>
-                            <div class="step-name">Selesai</div>
+                            <span class="text-xs font-bold mt-3 text-center {{ $step4Text }}">Selesai</span>
                         </div>
                     </div>
 
+                    <!-- Alerts Info Status -->
                     @if($pengajuan->status === 'rejected')
-                        <div class="alert alert-danger mt-4 border-0" style="background-color: #FEF2F2; color: #B91C1C;">
-                            <strong><i class="fas fa-times-circle me-2"></i> Pengajuan Ditolak</strong><br>
-                            Alasan: "{{ $pengajuan->l2_note ?? $pengajuan->l1_note ?? 'Tidak ada catatan khusus.' }}"
+                        <div class="mt-8 bg-rose-50 border border-rose-200 rounded-2xl p-5 shadow-sm">
+                            <h6 class="font-bold text-rose-700 mb-1 flex items-center gap-2"><i class="fas fa-times-circle"></i> Pengajuan Ditolak</h6>
+                            <p class="text-sm text-rose-600 m-0">Alasan: "{{ $pengajuan->l2_note ?? $pengajuan->l1_note ?? 'Tidak ada catatan khusus.' }}"</p>
                         </div>
                     @elseif($pengajuan->status === 'approved')
-                        <div class="alert alert-success mt-4 border-0" style="background-color: #ECFDF5; color: #047857;">
-                            <strong><i class="fas fa-check-circle me-2"></i> Pengajuan Berhasil Disetujui!</strong><br>
-                            Dana perjalanan dinas Anda siap dicairkan oleh bagian Finance.
+                        <div class="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-5 shadow-sm">
+                            <h6 class="font-bold text-emerald-700 mb-1 flex items-center gap-2"><i class="fas fa-check-circle"></i> Pengajuan Berhasil Disetujui!</h6>
+                            <p class="text-sm text-emerald-600 m-0">Dana perjalanan dinas Anda siap dicairkan oleh bagian Finance. Anda dapat mengunduh surat tugas di bawah.</p>
                         </div>
                     @endif
                 </div>
 
-                <!-- DETAIL PENGAJUAN -->
-                <div class="detail-card">
-                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <!-- DETAIL PENGAJUAN CARD -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 md:p-8">
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b border-slate-100 pb-5 gap-4">
                         <div>
-                            <h4 class="fw-bold mb-1">Pengajuan Perjalanan Dinas (UC)</h4>
-                            <p class="text-muted small m-0">Tgl Dibuat: {{ \Carbon\Carbon::parse($pengajuan->created_at)->format('d F Y, H:i') }} WITA</p>
+                            <h4 class="text-xl font-bold text-slate-800 mb-1">Dokumen UPCOUNTRY (UC)</h4>
+                            <p class="text-slate-500 text-sm m-0">Tanggal Dibuat: {{ \Carbon\Carbon::parse($pengajuan->created_at)->format('d F Y, H:i') }} WITA</p>
                         </div>
+                        <span class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold shadow-sm flex items-center gap-2">
+                            <i class="fas fa-hashtag text-slate-400"></i> UC-{{ sprintf('%04d', $pengajuan->id) }}
+                        </span>
                     </div>
 
-                    <div class="section-title"><i class="fas fa-map-marked-alt"></i> Rute & Jadwal</div>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <div class="info-group">
-                                <div class="info-label">Rute Perjalanan</div>
-                                <div class="info-value text-primary">
-                                    {{ $pengajuan->departure }} <i class="fas fa-arrow-right mx-2 text-muted"></i> {{ $pengajuan->destination }}
+                    <!-- Rute & Jadwal -->
+                    <div class="mb-8">
+                        <h6 class="text-sm font-bold text-brand-600 uppercase tracking-wider flex items-center gap-2 mb-4 border-b border-slate-100 pb-2">
+                            <i class="fas fa-map-marked-alt text-lg"></i> Rute & Jadwal
+                        </h6>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rute Perjalanan</p>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 flex items-center flex-wrap gap-2">
+                                    {{ $pengajuan->departure }} <i class="fas fa-arrow-right text-slate-400 text-[10px]"></i> <span class="text-brand-600">{{ $pengajuan->destination }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tanggal Pelaksanaan</p>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800">
+                                    <i class="far fa-calendar-alt text-slate-400 mr-2"></i> {{ \Carbon\Carbon::parse($pengajuan->start_date)->format('d M Y') }} <span class="text-slate-400 mx-1">s/d</span> {{ \Carbon\Carbon::parse($pengajuan->end_date)->format('d M Y') }}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="info-group">
-                                <div class="info-label">Tanggal Pelaksanaan</div>
-                                <div class="info-value">
-                                    {{ \Carbon\Carbon::parse($pengajuan->start_date)->format('d M Y') }} s.d {{ \Carbon\Carbon::parse($pengajuan->end_date)->format('d M Y') }}
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="section-title"><i class="fas fa-users"></i> Tim & Operasional</div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="info-group">
-                                <div class="info-label">Transportasi yang Digunakan</div>
-                                <div class="info-value">
+                    <!-- Tim & Operasional -->
+                    <div class="mb-4">
+                        <h6 class="text-sm font-bold text-brand-600 uppercase tracking-wider flex items-center gap-2 mb-4 border-b border-slate-100 pb-2">
+                            <i class="fas fa-users text-lg"></i> Tim & Operasional
+                        </h6>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Transportasi</p>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 flex items-center gap-3">
                                     @if($pengajuan->transportation_type == 'Darat')
-                                        <i class="fas fa-car text-muted me-2"></i> Darat 
+                                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fas fa-car"></i></div>
+                                        Darat 
                                         @if($pengajuan->vehicle_number)
-                                            <span class="badge bg-secondary ms-2">{{ $pengajuan->vehicle_number }}</span>
+                                            <span class="bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded-md ml-auto">{{ $pengajuan->vehicle_number }}</span>
                                         @endif
                                     @elseif($pengajuan->transportation_type == 'Udara')
-                                        <i class="fas fa-plane text-muted me-2"></i> Udara
+                                        <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center"><i class="fas fa-plane"></i></div>
+                                        Udara
                                     @else
-                                        <i class="fas fa-ship text-muted me-2"></i> Laut
+                                        <div class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center"><i class="fas fa-ship"></i></div>
+                                        Laut
                                     @endif
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-group">
-                                <div class="info-label">Pendamping</div>
-                                <div class="info-value">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Pendamping</p>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 min-h-[58px] flex items-center">
                                     @if($pengajuan->companion_1 || $pengajuan->companion_2)
-                                        <ul class="mb-0 ps-3">
+                                        <ul class="m-0 pl-4 space-y-1">
                                             @if($pengajuan->companion_1) <li>{{ $pengajuan->companion_1 }}</li> @endif
                                             @if($pengajuan->companion_2) <li>{{ $pengajuan->companion_2 }}</li> @endif
                                         </ul>
                                     @else
-                                        <span class="text-muted fst-italic">Berangkat sendiri (Tidak ada)</span>
+                                        <span class="text-slate-400 italic">Berangkat sendiri (Tidak ada)</span>
                                     @endif
                                 </div>
                             </div>
@@ -291,10 +405,10 @@
                     </div>
 
                     <!-- Tombol Download PDF jika sudah Approved -->
-                    @if($pengajuan->status === 'approved')
-                    <div class="mt-5 text-end border-top pt-4">
-                        <a href="{{ route('pengajuan.cetak', $pengajuan->id) }}" target="_blank" class="btn btn-danger" style="border-radius: 8px; font-weight: 600; padding: 12px 25px;">
-                            <i class="fas fa-file-pdf me-2"></i> Unduh PDF Dokumen
+                    @if($pengajuan->status === 'approved' || $pengajuan->status === 'selesai')
+                    <div class="mt-10 pt-6 border-t border-slate-100 text-end">
+                        <a href="{{ route('pengajuan.cetak', $pengajuan->id) }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 text-sm">
+                            <i class="fas fa-file-pdf"></i> Unduh PDF Dokumen
                         </a>
                     </div>
                     @endif
@@ -307,24 +421,71 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- INTERACTIVE SCRIPTS -->
     <script>
-        // --- LOGIKA RESPONSIVE SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-active');
-                overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Notification Dropdown Logic ---
+            const notifBtn = document.getElementById('notifBtn');
+            const notifDropdown = document.getElementById('notifDropdown');
+            const badgeDot = document.querySelector('.badge-dot');
+
+            if(notifBtn && notifDropdown) {
+                notifBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = notifDropdown.classList.contains('invisible');
+                    
+                    if (isHidden) {
+                        notifDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
+                        notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                        if(badgeDot) badgeDot.style.display = 'none';
+                    } else {
+                        closeNotif();
+                    }
+                });
+
+                function closeNotif() {
+                    notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                    notifDropdown.classList.add('opacity-0', 'translate-y-[-10px]');
+                    setTimeout(() => notifDropdown.classList.add('invisible'), 300);
+                }
+
+                window.addEventListener('click', (e) => {
+                    if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                        closeNotif();
+                    }
+                });
             }
-        });
-        
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-active');
-            overlay.classList.remove('active');
+
+            // --- Toggle Sidebar Logic (Mobile & Desktop) ---
+            const sidebar = document.getElementById('sidebar');
+            const openSidebarBtn = document.getElementById('openSidebarBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            if(openSidebarBtn) {
+                openSidebarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.remove('-translate-x-full');
+                        mobileOverlay.classList.remove('hidden');
+                        setTimeout(() => mobileOverlay.classList.replace('opacity-0', 'opacity-100'), 10);
+                    } else {
+                        sidebar.classList.toggle('collapsed');
+                    }
+                });
+            }
+
+            function closeSidebar() {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+                }
+            }
+
+            if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', closeSidebar);
         });
     </script>
 </body>

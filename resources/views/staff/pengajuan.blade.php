@@ -6,161 +6,80 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Form Pengajuan UC - Satu Sanzaya</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-blue: #0A539B;
-            --light-blue: #E5F0FF;
-            --sidebar-bg: #FAFAFA;
-            --text-dark: #333333;
-            --text-gray: #888888;
-            --border-color: #EAEAEA;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px; 
-        }
-
-        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
-        .wrapper { display: flex; height: 100vh; }
-
-        /* --- SIDEBAR KONSISTEN --- */
-        .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
-        .logo-img { max-width: 140px; transition: 0.3s; }
-        .sidebar.collapsed .logo-img { max-width: 40px; }
-        .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
-        .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
-        .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
-        .menu-text { margin-left: 15px; transition: opacity 0.2s; }
-        .sidebar.collapsed .menu-text { opacity: 0; display: none; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
-
-        /* --- MAIN CONTENT & NAVBAR --- */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
-        .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-info { text-align: right; line-height: 1.2; }
-        .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: capitalize; }
-        .user-avatar { font-size: 32px; color: var(--primary-blue); }
-        .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
-
-        /* --- STYLING FORM PENGAJUAN --- */
-        .form-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        .form-title { font-size: 18px; font-weight: 700; color: var(--primary-blue); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-subtitle { font-size: 13px; color: var(--text-gray); margin-bottom: 30px; }
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .form-label-custom { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-custom { width: 100%; border: 1px solid #CBD5E1; border-radius: 10px; padding: 12px 16px; font-size: 14px; color: var(--text-dark); background-color: #F8FAFC; transition: all 0.2s; }
-        .input-custom:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(10, 83, 155, 0.1); background-color: #FFFFFF; outline: none; }
-        .input-custom:disabled, .input-custom[readonly] { background-color: #E2E8F0; cursor: not-allowed; color: #64748B; font-weight: 500; }
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .btn-submit-form { background-color: var(--primary-blue); color: white; border: none; border-radius: 10px; padding: 14px 30px; font-size: 15px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(10,83,155,0.2); width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-submit-form:hover { background-color: #08427b; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(10,83,155,0.3); color: white; }
-        .btn-submit-form.disabled { background-color: #94A3B8; cursor: not-allowed; transform: none; box-shadow: none; }
+        /* Smooth transitions */
+        .transition-all-ease { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Custom Checkbox/Radio */
-        .transport-options { display: flex; gap: 20px; }
-        .transport-label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-dark); cursor: pointer; }
-        .transport-label input[type="radio"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary-blue); }
+        /* --- DESKTOP COLLAPSE SIDEBAR STYLES --- */
+        @media (min-width: 1024px) {
+            .sidebar.collapsed { width: 88px !important; }
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .sidebar-title,
+            .sidebar.collapsed .badge-count { display: none; opacity: 0; }
+            .sidebar.collapsed .menu-item { justify-content: center; padding-left: 0; padding-right: 0; margin-left: 0.75rem; margin-right: 0.75rem; }
+            .sidebar.collapsed .menu-item i { margin-right: 0 !important; }
+            .sidebar.collapsed .logo-img { max-width: 40px; }
+        }
 
-        /* --- NOTIFIKASI DROPDOWN --- */
-        .nav-icon { position: relative; cursor: pointer; }
-        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
-        .badge-dot.active { display: block; }
-        
-        .notification-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 320px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .notification-dropdown.show { display: block; }
-        .notification-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--text-dark);
-            background-color: #FAFAFA;
-        }
-        .notification-list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .notification-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #F1F5F9;
-            display: flex;
-            align-items: start;
-            gap: 15px;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover { background-color: #F8FAFC; }
-        .notification-item:last-child { border-bottom: none; }
-        .notification-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        
-        .notif-success { background-color: #ECFDF5; color: #10B981; }
-        .notif-warning { background-color: #FFFBEB; color: #D97706; }
-        .notif-danger { background-color: #FEF2F2; color: #EF4444; }
-        .notif-info { background-color: #EFF6FF; color: #3B82F6; }
-
-        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
-        .notification-content span { font-size: 11px; color: var(--text-gray); }
-
-        /* --- RESPONSIVE --- */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
-        
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            .sidebar.mobile-active { left: 0; }
-            .sidebar-overlay.active { display: block; }
-            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
-            .top-navbar { padding: 0 20px; }
-            .content-area { padding: 20px; }
-            .user-role { display: none; }
-            .transport-options { flex-direction: column; gap: 10px; }
-        }
+        /* Custom Radio Button Style */
+        .custom-radio { accent-color: #2563eb; width: 1.2rem; height: 1.2rem; cursor: pointer; }
     </style>
 </head>
-<body>
+<body class="bg-surface text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
 
-    <!-- MENGAMBIL DATA PEGAWAI UNTUK DROPDOWN PENDAMPING & NOTIFIKASI-->
+    <!-- MENGAMBIL DATA NOTIFIKASI PRIBADI STAFF -->
     @php
         $userId = \Illuminate\Support\Facades\Auth::id();
         
-        // Mengambil semua user kecuali staff yang sedang login
-        $usersList = \App\Models\User::where('id', '!=', $userId)
-                        ->orderBy('name', 'asc')
-                        ->get();
-                        
         // Logika Notifikasi khusus Staff
         $notifications = \App\Models\TravelRequest::where('user_id', $userId)
                             ->orderBy('updated_at', 'desc')
@@ -169,265 +88,375 @@
         $hasNewNotif = $notifications->count() > 0;
     @endphp
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
-    <div class="wrapper">
+    <!-- SIDEBAR STAFF -->
+    <aside id="sidebar" class="sidebar bg-white w-[280px] h-full border-r border-slate-200 flex flex-col transition-all-ease fixed lg:relative z-50 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <!-- SIDEBAR STAFF -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo-area">
-                <a href="{{ route('staff.dashboard') ?? '#' }}">
-                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
-                </a>
-            </div>
-
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Pengajuan</span></a></li>
-                <li><a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item active"><i class="fas fa-file-lines menu-icon"></i><span class="menu-text">Pengajuan UC</span></a></li>
-                <li><a href="{{ route('staff.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
-            </ul>
-
-            <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">@csrf</form>
-                <a href="#" class="menu-item" style="color: var(--text-gray);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-arrow-right-from-bracket menu-icon"></i><span class="menu-text">Keluar</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <header class="top-navbar">
-                <div class="nav-left">
-                    <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Form Pengajuan UC Baru</h5>
-                </div>
-                <div class="nav-right">
-                    
-                    <!-- AREA NOTIFIKASI -->
-                    <div class="nav-icon" id="notificationToggle">
-                        <i class="far fa-bell" style="font-size: 20px;"></i>
-                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
-                        
-                        <!-- DROPDOWN NOTIFIKASI STAFF -->
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            <div class="notification-header">
-                                Notifikasi Pengajuan Saya
-                            </div>
-                            <ul class="notification-list">
-                                @forelse($notifications as $notif)
-                                    @php
-                                        // Set style notif berdasarkan status
-                                        $notifIcon = 'fa-file-alt';
-                                        $notifClass = 'notif-info';
-                                        $statusText = 'Sedang diproses';
-                                        
-                                        if($notif->status == 'pending_l1') { $notifClass = 'notif-warning'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
-                                        if($notif->status == 'pending_l2') { $notifClass = 'notif-info'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
-                                        if($notif->status == 'approved') { $notifClass = 'notif-success'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
-                                        if($notif->status == 'rejected') { $notifClass = 'notif-danger'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
-                                    @endphp
-                                    <li class="notification-item" onclick="window.location.href='{{ route('staff.riwayat') ?? '#' }}'" style="cursor: pointer;">
-                                        <div class="notification-icon {{ $notifClass }}"><i class="fas {{ $notifIcon }}"></i></div>
-                                        <div class="notification-content">
-                                            <p>Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span style="color: var(--text-dark); font-weight: 500;">{{ $statusText }}</span></p>
-                                            <span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span>
-                                        </div>
-                                    </li>
-                                @empty
-                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada pembaruan status.</p></div></li>
-                                @endforelse
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- END AREA NOTIFIKASI -->
-
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
-                            <p class="user-role">{{ Auth::user()->role ?? 'staff' }}</p>
-                        </div>
-                        <i class="fas fa-user-circle user-avatar" style="color: var(--primary-blue);"></i>
-                    </div>
-                </div>
-            </header>
-
-            <main class="content-area">
-                
-                <div class="row justify-content-center">
-                    <div class="col-xl-9 col-lg-10">
-                        
-                        <div class="form-card">
-                            <h4 class="form-title">Form Pengajuan Biaya</h4>
-                            <p class="form-subtitle">Perjalanan Dinas Upcountry (UC)</p>
-                            
-                            <!-- Alert Error Validasi -->
-                            @if($errors->any())
-                            <div class="alert alert-danger" style="border-radius: 10px; font-size: 13px;">
-                                <ul class="mb-0">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @endif
-
-                            <form action="{{ route('staff.pengajuan.store') }}" method="POST" id="pengajuanForm">
-                                @csrf
-                                <div class="row g-4">
-                                    <!-- Identitas Pemohon -->
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">1. Nama Pegawai</label>
-                                        <input type="text" class="input-custom" value="{{ Auth::user()->name ?? '' }}" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">2. Jabatan / Divisi</label>
-                                        <input type="text" class="input-custom" value="{{ ucfirst(Auth::user()->role ?? '') }} {{ Auth::user()->division ?? '' }}" readonly>
-                                    </div>
-
-                                    <!-- Keberangkatan & Tujuan -->
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">3. Kota Keberangkatan <span class="text-danger">*</span></label>
-                                        <input type="text" name="departure" class="input-custom" placeholder="Contoh: Makassar..." required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">4. Kota Tujuan <span class="text-danger">*</span></label>
-                                        <input type="text" name="destination" class="input-custom" placeholder="Contoh: Pinrang, Parepare..." required>
-                                    </div>
-
-                                    <!-- Tanggal Berangkat & Pulang -->
-                                    <div class="col-md-4">
-                                        <label class="form-label-custom">5. Tanggal Berangkat <span class="text-danger">*</span></label>
-                                        <input type="date" name="start_date" id="start_date" class="input-custom" required onchange="calculateDays()">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label-custom">6. Tanggal Pulang <span class="text-danger">*</span></label>
-                                        <input type="date" name="end_date" id="end_date" class="input-custom" required onchange="calculateDays()">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label-custom">7. Estimasi Waktu (Hari)</label>
-                                        <input type="text" id="waktu_hari" class="input-custom fw-bold" placeholder="0 Hari" readonly style="color: var(--primary-blue);">
-                                    </div>
-
-                                    <!-- Pendamping (Dropdown Data User) -->
-                                    <div class="col-md-12">
-                                        <label class="form-label-custom">8. Nama Pendamping (Opsional)</label>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <select name="companion_1" class="form-select input-custom">
-                                                    <option value="">-- Pilih Pendamping 1 --</option>
-                                                    @foreach($usersList as $u)
-                                                        <option value="{{ $u->name }} - {{ ucfirst($u->role) }} {{ $u->division }}">
-                                                            {{ $u->name }} ({{ ucfirst($u->role) }} {{ $u->division }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <select name="companion_2" class="form-select input-custom">
-                                                    <option value="">-- Pilih Pendamping 2 --</option>
-                                                    @foreach($usersList as $u)
-                                                        <option value="{{ $u->name }} - {{ ucfirst($u->role) }} {{ $u->division }}">
-                                                            {{ $u->name }} ({{ ucfirst($u->role) }} {{ $u->division }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Transportasi -->
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">9. Jenis Transportasi <span class="text-danger">*</span></label>
-                                        <div class="transport-options mt-2">
-                                            <label class="transport-label">
-                                                <input type="radio" name="transportation_type" value="Darat" required checked> Darat
-                                            </label>
-                                            <label class="transport-label">
-                                                <input type="radio" name="transportation_type" value="Laut"> Laut
-                                            </label>
-                                            <label class="transport-label">
-                                                <input type="radio" name="transportation_type" value="Udara"> Udara
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- Muncul otomatis jika transport darat dipilih -->
-                                    <div class="col-md-6" id="no_polisi_div">
-                                        <label class="form-label-custom">10. No. Polisi Kendaraan (Jika Darat)</label>
-                                        <input type="text" name="vehicle_number" id="vehicle_number" class="input-custom" placeholder="Contoh: DD 1234 XY">
-                                    </div>
-                                    
-                                    <!-- TAMBAHAN INPUT BENSIN -->
-                                    <div class="col-md-12 mt-4">
-                                        <label class="form-label-custom text-primary"><i class="fas fa-gas-pump me-2"></i>Estimasi Biaya Bensin (Manual)</label>
-                                        <input type="number" name="biaya_bensin" class="input-custom" placeholder="Contoh: 150000 (Isi jika ada kebutuhan bensin/transportasi tambahan)">
-                                        <small class="text-muted" style="font-size: 11px;">*Biaya makan dan penginapan akan dihitung otomatis oleh sistem.</small>
-                                    </div>
-                                </div>
-
-                                <div class="mt-5 pt-4 border-top">
-                                    <p class="text-muted small mb-4 fst-italic">Demikian surat tugas ini saya buat sebenar-benarnya untuk mendapatkan persetujuan.</p>
-                                    
-                                    <button type="submit" class="btn-submit-form" id="btnSubmit">
-                                        <i class="fas fa-paper-plane"></i> Ajukan Permohonan UC
-                                    </button>
-                                </div>
-
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-
-            </main>
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-slate-100 px-6 logo-area overflow-hidden">
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="flex items-center group">
+                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img max-w-[140px] group-hover:scale-105 transition-all-ease">
+            </a>
+            <button id="closeSidebarBtn" class="lg:hidden absolute right-4 text-slate-400 hover:text-slate-800">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Navigation -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Menu Utama</p>
+            
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-border-all w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            
+            <a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-clock-rotate-left w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Riwayat Pengajuan</span>
+            </a>
+            
+            <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl bg-brand-50 text-brand-600 font-medium transition-all-ease">
+                <i class="fas fa-file-lines w-5 text-center text-lg mr-3"></i>
+                <span class="menu-text">Pengajuan UC</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <div class="border-t border-slate-100"></div>
+            </div>
+            
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Pribadi</p>
+            
+            <a href="{{ route('staff.settings') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-gear w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengaturan Akun</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-slate-100">
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">@csrf</form>
+            <button onclick="document.getElementById('logout-form').submit();" class="menu-item flex items-center px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 font-medium transition-all-ease group">
+                <i class="fas fa-sign-out-alt w-5 text-center text-lg mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="menu-text">Keluar Sistem</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-surface relative transition-all-ease">
+        
+        <!-- GLASSMORPHISM NAVBAR -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 transition-all-ease">
+            
+            <div class="flex items-center gap-4 nav-left">
+                <button id="openSidebarBtn" class="hamburger-btn text-slate-500 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-bold text-slate-800">Form Pengajuan Baru</h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 lg:gap-6 nav-right">
+                <!-- NOTIFICATION BELL WITH PING -->
+                <div class="relative z-50 nav-icon">
+                    <button id="notifBtn" class="relative p-2.5 text-slate-400 hover:text-brand-600 bg-slate-50 hover:bg-brand-50 rounded-full transition-all-ease focus:outline-none">
+                        <i class="far fa-bell text-xl"></i>
+                        @if($hasNewNotif)
+                            <span class="absolute top-2 right-2.5 flex h-2.5 w-2.5 badge-dot">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white"></span>
+                            </span>
+                        @endif
+                    </button>
+
+                    <!-- DROPDOWN NOTIFIKASI -->
+                    <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible transform translate-y-[-10px] transition-all duration-300 ease-out notification-dropdown">
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center notification-header">
+                            <h3 class="font-semibold text-slate-800">Notifikasi Status</h3>
+                            @if($hasNewNotif)
+                                <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2 py-1 rounded-md">{{ $notifications->count() }} Update</span>
+                            @endif
+                        </div>
+                        <div class="max-h-[320px] overflow-y-auto no-scrollbar notification-list">
+                            @forelse($notifications as $notif)
+                                @php
+                                    $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-file-alt'; $statusText = 'Sedang diproses';
+                                    if($notif->status == 'pending_l1') { $notifClass = 'bg-amber-50 text-amber-500 group-hover:bg-amber-100'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
+                                    if($notif->status == 'pending_l2') { $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
+                                    if($notif->status == 'approved') { $notifClass = 'bg-emerald-50 text-emerald-500 group-hover:bg-emerald-100'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
+                                    if($notif->status == 'rejected') { $notifClass = 'bg-rose-50 text-rose-500 group-hover:bg-rose-100'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
+                                @endphp
+                                <a href="{{ route('staff.riwayat') ?? '#' }}" class="flex items-start gap-4 p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors group notification-item">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors {{ $notifClass }} notification-icon">
+                                        <i class="fas {{ $notifIcon }}"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 notification-content">
+                                        <p class="text-sm text-slate-700 leading-snug mb-1">Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span class="font-bold">{{ $statusText }}</span></p>
+                                        <p class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i><span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span></p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="p-8 text-center notification-item">
+                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 notification-icon">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-medium notification-content">Belum ada pembaruan status.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER PROFILE -->
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 user-profile">
+                    <div class="hidden sm:block text-right user-info">
+                        <p class="text-sm font-bold text-slate-800 leading-tight user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
+                        <p class="text-xs font-medium text-slate-500 capitalize user-role">{{ Auth::user()->role ?? 'staff' }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100 user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'S', 0, 1)) }}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar content-area">
+            
+            <div class="max-w-5xl mx-auto">
+                
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 md:p-10 mb-8">
+                    
+                    <div class="mb-8 border-b border-slate-100 pb-6">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">Form Pengajuan Biaya (UC)</h2>
+                        <p class="text-slate-500 text-sm">Lengkapi formulir di bawah ini untuk mengajukan biaya perjalanan dinas Upcountry.</p>
+                    </div>
+
+                    <!-- Alert Error Validasi -->
+                    @if($errors->any())
+                    <div class="mb-6 bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-xl shadow-sm">
+                        <div class="flex items-center gap-2 mb-2 font-bold">
+                            <i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan:
+                        </div>
+                        <ul class="list-disc pl-5 text-sm space-y-1">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <form action="{{ route('staff.pengajuan.store') }}" method="POST" id="pengajuanForm">
+                        @csrf
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- Identitas (View Only) -->
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">1. Nama Pegawai</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 font-medium outline-none cursor-not-allowed" value="{{ Auth::user()->name ?? '' }}" readonly>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">2. Jabatan / Divisi</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 font-medium outline-none cursor-not-allowed" value="{{ ucfirst(Auth::user()->role ?? '') }} {{ Auth::user()->division ?? '' }}" readonly>
+                            </div>
+
+                            <div class="col-span-1 md:col-span-2 my-2"><hr class="border-slate-100"></div>
+
+                            <!-- Rute Perjalanan -->
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">3. Kota Keberangkatan <span class="text-rose-500">*</span></label>
+                                <input type="text" name="departure" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400" placeholder="Contoh: Makassar..." required>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">4. Kota Tujuan <span class="text-rose-500">*</span></label>
+                                <input type="text" name="destination" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400" placeholder="Contoh: Pinrang, Parepare..." required>
+                            </div>
+
+                            <!-- Tanggal -->
+                            <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">5. Tgl Berangkat <span class="text-rose-500">*</span></label>
+                                    <input type="date" name="start_date" id="start_date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" required onchange="calculateDays()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">6. Tgl Pulang <span class="text-rose-500">*</span></label>
+                                    <input type="date" name="end_date" id="end_date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" required onchange="calculateDays()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">7. Estimasi Waktu</label>
+                                    <input type="text" id="waktu_hari" class="w-full px-4 py-3 rounded-xl border border-brand-200 bg-brand-50 text-brand-700 font-bold outline-none cursor-not-allowed" placeholder="0 Hari" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-span-1 md:col-span-2 my-2"><hr class="border-slate-100"></div>
+
+                            <!-- Pendamping -->
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">8. Nama Pendamping (Opsional)</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <select name="companion_1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 appearance-none">
+                                        <option value="">-- Pilih Pendamping 1 --</option>
+                                        @foreach($usersList as $u)
+                                            <option value="{{ $u->name }} - {{ ucfirst($u->role) }} {{ $u->division }}">{{ $u->name }} ({{ ucfirst($u->role) }} {{ $u->division }})</option>
+                                        @endforeach
+                                    </select>
+                                    <select name="companion_2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 appearance-none">
+                                        <option value="">-- Pilih Pendamping 2 --</option>
+                                        @foreach($usersList as $u)
+                                            <option value="{{ $u->name }} - {{ ucfirst($u->role) }} {{ $u->division }}">{{ $u->name }} ({{ ucfirst($u->role) }} {{ $u->division }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Transportasi -->
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">9. Jenis Transportasi <span class="text-rose-500">*</span></label>
+                                <div class="flex flex-wrap gap-6 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200">
+                                    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
+                                        <input type="radio" name="transportation_type" value="Darat" class="custom-radio" required checked> Darat
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
+                                        <input type="radio" name="transportation_type" value="Laut" class="custom-radio"> Laut
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
+                                        <input type="radio" name="transportation_type" value="Udara" class="custom-radio"> Udara
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- No Polisi -->
+                            <div class="col-span-1" id="no_polisi_div">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">10. No. Polisi Kendaraan (Jika Darat)</label>
+                                <input type="text" name="vehicle_number" id="vehicle_number" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400" placeholder="Contoh: DD 1234 XY">
+                            </div>
+                            
+                            <!-- Estimasi Bensin -->
+                            <div class="col-span-1 md:col-span-2 mt-4">
+                                <label class="block text-xs font-bold text-brand-600 uppercase tracking-wider mb-2"><i class="fas fa-gas-pump me-1"></i> Estimasi Biaya Bensin (Manual)</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">Rp</span>
+                                    <input type="number" name="biaya_bensin" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400" placeholder="Contoh: 150000 (Isi jika ada kebutuhan bensin/tambahan)">
+                                </div>
+                                <p class="text-xs text-slate-400 mt-2 italic">*Biaya makan dan penginapan harian akan dikalkulasi otomatis oleh sistem berdasarkan jumlah hari.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 pt-6 border-t border-slate-100">
+                            <p class="text-sm text-slate-500 mb-6 italic text-center">Demikian surat tugas ini saya buat sebenar-benarnya untuk mendapatkan persetujuan.</p>
+                            <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-base py-4 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2" id="btnSubmit">
+                                <i class="fas fa-paper-plane"></i> Ajukan Permohonan UC
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- INTERACTIVE SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <script>
-        // --- LOGIKA NOTIFIKASI DROPDOWN ---
-        const notificationToggle = document.getElementById('notificationToggle');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-        const badgeDot = document.querySelector('.badge-dot');
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Notification Dropdown Logic ---
+            const notifBtn = document.getElementById('notifBtn');
+            const notifDropdown = document.getElementById('notifDropdown');
+            const badgeDot = document.querySelector('.badge-dot');
 
-        if(notificationToggle) {
-            notificationToggle.addEventListener('click', function(event) {
-                event.stopPropagation(); // Mencegah klik menyebar ke window
-                notificationDropdown.classList.toggle('show');
-                // Jika dropdown dibuka, sembunyikan titik merah
-                if(notificationDropdown.classList.contains('show') && badgeDot) {
-                    badgeDot.classList.remove('active');
+            if(notifBtn && notifDropdown) {
+                notifBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = notifDropdown.classList.contains('invisible');
+                    
+                    if (isHidden) {
+                        notifDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
+                        notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                        if(badgeDot) badgeDot.style.display = 'none'; // hide ping
+                    } else {
+                        closeNotif();
+                    }
+                });
+
+                function closeNotif() {
+                    notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                    notifDropdown.classList.add('opacity-0', 'translate-y-[-10px]');
+                    setTimeout(() => notifDropdown.classList.add('invisible'), 300);
                 }
-            });
 
-            // Tutup dropdown jika klik di luar area
-            window.addEventListener('click', function(event) {
-                if (!notificationToggle.contains(event.target)) {
-                    notificationDropdown.classList.remove('show');
-                }
-            });
-        }
-
-        // --- LOGIKA RESPONSIVE SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-active');
-                overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
+                window.addEventListener('click', (e) => {
+                    if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                        closeNotif();
+                    }
+                });
             }
-        });
-        
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-active');
-            overlay.classList.remove('active');
+
+            // --- Toggle Sidebar Logic (Mobile & Desktop) ---
+            const sidebar = document.getElementById('sidebar');
+            const openSidebarBtn = document.getElementById('openSidebarBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            // Open/Collapse Handler
+            if(openSidebarBtn) {
+                openSidebarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.innerWidth < 1024) {
+                        // Logika Mobile (Offcanvas Overlay)
+                        sidebar.classList.remove('-translate-x-full');
+                        mobileOverlay.classList.remove('hidden');
+                        setTimeout(() => mobileOverlay.classList.replace('opacity-0', 'opacity-100'), 10);
+                    } else {
+                        // Logika Desktop (Collapse Kecil)
+                        sidebar.classList.toggle('collapsed');
+                    }
+                });
+            }
+
+            // Close Mobile Sidebar
+            function closeSidebar() {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+                }
+            }
+
+            if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', closeSidebar);
+
+            // --- HIDE/SHOW NOMOR POLISI ---
+            document.querySelectorAll('input[name="transportation_type"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const noPolisiDiv = document.getElementById('no_polisi_div');
+                    const noPolisiInput = document.getElementById('vehicle_number');
+                    if(this.value === 'Darat') {
+                        noPolisiDiv.style.display = 'block';
+                    } else {
+                        noPolisiDiv.style.display = 'none';
+                        noPolisiInput.value = ''; 
+                    }
+                });
+            });
+
+            // --- FORM SUBMIT LOADING ---
+            document.getElementById('pengajuanForm').addEventListener('submit', function(e) {
+                const btn = document.getElementById('btnSubmit');
+                if(btn.classList.contains('cursor-not-allowed')) {
+                    e.preventDefault();
+                    return;
+                }
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang Memproses...';
+                btn.classList.add('opacity-75', 'cursor-not-allowed');
+                btn.classList.remove('hover:-translate-y-0.5', 'hover:shadow-xl');
+            });
         });
 
         // --- KALKULATOR HARI OTOMATIS ---
@@ -440,50 +469,25 @@
                 const startDate = new Date(startInput);
                 const endDate = new Date(endInput);
 
-                // Validasi agar tanggal pulang tidak sebelum tanggal berangkat
                 if (endDate < startDate) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Tanggal Tidak Valid',
                         text: 'Tanggal pulang tidak boleh mendahului tanggal keberangkatan!',
+                        confirmButtonColor: '#3b82f6',
+                        customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl px-6 py-2.5' }
                     });
                     document.getElementById('end_date').value = '';
                     hariInput.value = '';
                     return;
                 }
 
-                // Hitung selisih waktu dalam milidetik
                 const diffTime = Math.abs(endDate - startDate);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; 
                 
                 hariInput.value = diffDays + ' Hari';
             }
         }
-
-        // --- HIDE/SHOW NOMOR POLISI ---
-        document.querySelectorAll('input[name="transportation_type"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const noPolisiDiv = document.getElementById('no_polisi_div');
-                const noPolisiInput = document.getElementById('vehicle_number');
-                if(this.value === 'Darat') {
-                    noPolisiDiv.style.display = 'block';
-                } else {
-                    noPolisiDiv.style.display = 'none';
-                    noPolisiInput.value = ''; // Reset input jika bukan darat
-                }
-            });
-        });
-
-        // --- KONFIRMASI SEBELUM SUBMIT ---
-        document.getElementById('pengajuanForm').addEventListener('submit', function(e) {
-            const btn = document.getElementById('btnSubmit');
-            if(btn.classList.contains('disabled')) {
-                e.preventDefault();
-                return;
-            }
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang Memproses...';
-            btn.classList.add('disabled');
-        });
     </script>
 </body>
 </html>

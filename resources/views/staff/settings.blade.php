@@ -6,156 +6,75 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Pengaturan Akun Staff - Satu Sanzaya</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-blue: #0A539B;
-            --light-blue: #E5F0FF;
-            --sidebar-bg: #FAFAFA;
-            --text-dark: #333333;
-            --text-gray: #888888;
-            --border-color: #EAEAEA;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px; 
-        }
-
-        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
-        .wrapper { display: flex; height: 100vh; }
-
-        /* --- SIDEBAR KONSISTEN --- */
-        .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
-        .logo-img { max-width: 140px; transition: 0.3s; }
-        .sidebar.collapsed .logo-img { max-width: 40px; }
-        .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
-        .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
-        .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
-        .menu-text { margin-left: 15px; transition: opacity 0.2s; }
-        .sidebar.collapsed .menu-text { opacity: 0; display: none; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
-        .btn-create { background-color: var(--primary-blue); color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; text-decoration: none; }
-        .btn-create:hover { background-color: #08427b; color: white; }
-        .sidebar.collapsed .sidebar-footer { padding: 20px 10px; }
-        .sidebar.collapsed .btn-create span { display: none; }
-
-        /* --- NOTIFIKASI DROPDOWN --- */
-        .nav-icon { position: relative; cursor: pointer; }
-        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
-        .badge-dot.active { display: block; }
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .notification-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 320px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .notification-dropdown.show { display: block; }
-        .notification-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--text-dark);
-            background-color: #FAFAFA;
-        }
-        .notification-list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .notification-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #F1F5F9;
-            display: flex;
-            align-items: start;
-            gap: 15px;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover { background-color: #F8FAFC; }
-        .notification-item:last-child { border-bottom: none; }
-        .notification-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .notif-success { background-color: #ECFDF5; color: #10B981; }
-        .notif-warning { background-color: #FFFBEB; color: #D97706; }
-        .notif-danger { background-color: #FEF2F2; color: #EF4444; }
-        .notif-info { background-color: #EFF6FF; color: #3B82F6; }
+        /* Smooth transitions */
+        .transition-all-ease { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
-        .notification-content span { font-size: 11px; color: var(--text-gray); }
-
-        /* --- MAIN CONTENT & NAVBAR --- */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
-        .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-info { text-align: right; line-height: 1.2; }
-        .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: lowercase; }
-        .user-avatar { font-size: 32px; color: var(--primary-blue); }
-        .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
-
-        /* --- STYLING HALAMAN SETTINGS --- */
-        .settings-card { background: #FFFFFF; border-radius: 16px; border: 1px solid var(--border-color); padding: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        .settings-title { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-        .settings-title i { color: var(--primary-blue); }
-        
-        .form-label-custom { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-custom { width: 100%; border: 1px solid #CBD5E1; border-radius: 10px; padding: 12px 16px; font-size: 14px; color: var(--text-dark); font-weight: 500; background-color: #F8FAFC; transition: all 0.2s; outline: none; }
-        .input-custom:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(10, 83, 155, 0.1); background-color: #FFFFFF; }
-        .input-custom:disabled { background-color: #E2E8F0; cursor: not-allowed; color: #94A3B8; }
-        
-        .btn-save { background-color: var(--primary-blue); color: white; border: none; border-radius: 10px; padding: 12px 25px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(10,83,155,0.2); }
-        .btn-save:hover { background-color: #08427b; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(10,83,155,0.3); color: white; }
-
-        /* Profile Avatar Besar */
-        .avatar-upload { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
-        .avatar-lg { width: 80px; height: 80px; border-radius: 50%; background-color: var(--light-blue); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; }
-        .btn-outline-custom { border: 1px solid var(--border-color); background: white; color: var(--text-dark); padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
-        .btn-outline-custom:hover { background: #F8F9FA; border-color: #CCC; }
-
-        /* --- RESPONSIVE --- */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
-        
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            .sidebar.mobile-active { left: 0; }
-            .sidebar-overlay.active { display: block; }
-            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
-            .top-navbar { padding: 0 20px; }
-            .content-area { padding: 20px; }
-            .user-role { display: none; }
+        /* --- DESKTOP COLLAPSE SIDEBAR STYLES --- */
+        @media (min-width: 1024px) {
+            .sidebar.collapsed { width: 88px !important; }
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .sidebar-title,
+            .sidebar.collapsed .badge-count { display: none; opacity: 0; }
+            .sidebar.collapsed .menu-item { justify-content: center; padding-left: 0; padding-right: 0; margin-left: 0.75rem; margin-right: 0.75rem; }
+            .sidebar.collapsed .menu-item i { margin-right: 0 !important; }
+            .sidebar.collapsed .logo-img { max-width: 40px; }
+            .sidebar.collapsed .btn-create span { display: none; }
         }
     </style>
 </head>
-<body>
+<body class="bg-surface text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
 
-    <!-- MENGAMBIL DATA NOTIFIKASI STAFF -->
+    <!-- MENGAMBIL DATA NOTIFIKASI PRIBADI STAFF -->
     @php
         $userId = \Illuminate\Support\Facades\Auth::id();
         
@@ -167,244 +86,363 @@
         $hasNewNotif = $notifications->count() > 0;
     @endphp
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
-    <div class="wrapper">
+    <!-- SIDEBAR STAFF -->
+    <aside id="sidebar" class="sidebar bg-white w-[280px] h-full border-r border-slate-200 flex flex-col transition-all-ease fixed lg:relative z-50 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo-area">
-                <a href="{{ route('staff.dashboard') ?? '#' }}">
-                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
-                </a>
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-slate-100 px-6 logo-area overflow-hidden">
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="flex items-center group">
+                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img max-w-[140px] group-hover:scale-105 transition-all-ease">
+            </a>
+            <button id="closeSidebarBtn" class="lg:hidden absolute right-4 text-slate-400 hover:text-slate-800">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Menu Utama</p>
+            
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-border-all w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            
+            <a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-clock-rotate-left w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Riwayat Pengajuan</span>
+            </a>
+            
+            <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-file-lines w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengajuan UC</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <div class="border-t border-slate-100"></div>
+            </div>
+            
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Pribadi</p>
+            
+            <a href="{{ route('staff.settings') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl bg-brand-50 text-brand-600 font-medium transition-all-ease">
+                <i class="fas fa-gear w-5 text-center text-lg mr-3"></i>
+                <span class="menu-text">Pengaturan Akun</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-slate-100">
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">@csrf</form>
+            <button onclick="document.getElementById('logout-form').submit();" class="menu-item flex items-center px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 font-medium transition-all-ease group mb-3">
+                <i class="fas fa-sign-out-alt w-5 text-center text-lg mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="menu-text">Keluar Sistem</span>
+            </button>
+            
+            <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="btn-create flex items-center justify-center gap-2 w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                <i class="fas fa-plus"></i> <span class="menu-text">Buat Pengajuan</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-surface relative transition-all-ease">
+        
+        <!-- GLASSMORPHISM NAVBAR -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 transition-all-ease">
+            
+            <div class="flex items-center gap-4 nav-left">
+                <button id="openSidebarBtn" class="hamburger-btn text-slate-500 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-bold text-slate-800">Pengaturan Akun</h1>
+                </div>
             </div>
 
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Pengajuan</span></a></li>
-                <li><a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item"><i class="fas fa-file-lines menu-icon"></i><span class="menu-text">Pengajuan UC</span></a></li>
-                <li><a href="{{ route('staff.settings') ?? '#' }}" class="menu-item active"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
-            </ul>
+            <div class="flex items-center gap-4 lg:gap-6 nav-right">
+                <!-- NOTIFICATION BELL WITH PING -->
+                <div class="relative z-50 nav-icon">
+                    <button id="notifBtn" class="relative p-2.5 text-slate-400 hover:text-brand-600 bg-slate-50 hover:bg-brand-50 rounded-full transition-all-ease focus:outline-none">
+                        <i class="far fa-bell text-xl"></i>
+                        @if($hasNewNotif)
+                            <span class="absolute top-2 right-2.5 flex h-2.5 w-2.5 badge-dot">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white"></span>
+                            </span>
+                        @endif
+                    </button>
 
-            <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">@csrf</form>
-                <a href="#" class="menu-item" style="color: var(--text-gray);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-arrow-right-from-bracket menu-icon"></i><span class="menu-text">Keluar</span>
-                </a>
-                <a href="{{ route('staff.pengajuan.create') }}" class="btn-create mt-3"><i class="fas fa-plus"></i><span class="menu-text">Buat Pengajuan</span></a>
+                    <!-- DROPDOWN NOTIFIKASI -->
+                    <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible transform translate-y-[-10px] transition-all duration-300 ease-out notification-dropdown">
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center notification-header">
+                            <h3 class="font-semibold text-slate-800">Notifikasi Status</h3>
+                            @if($hasNewNotif)
+                                <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2 py-1 rounded-md">{{ $notifications->count() }} Update</span>
+                            @endif
+                        </div>
+                        <div class="max-h-[320px] overflow-y-auto no-scrollbar notification-list">
+                            @forelse($notifications as $notif)
+                                @php
+                                    $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-file-alt'; $statusText = 'Sedang diproses';
+                                    if($notif->status == 'pending_l1') { $notifClass = 'bg-amber-50 text-amber-500 group-hover:bg-amber-100'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
+                                    if($notif->status == 'pending_l2') { $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
+                                    if($notif->status == 'approved') { $notifClass = 'bg-emerald-50 text-emerald-500 group-hover:bg-emerald-100'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
+                                    if($notif->status == 'rejected') { $notifClass = 'bg-rose-50 text-rose-500 group-hover:bg-rose-100'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
+                                @endphp
+                                <a href="{{ route('staff.riwayat') ?? '#' }}" class="flex items-start gap-4 p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors group notification-item">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors {{ $notifClass }} notification-icon">
+                                        <i class="fas {{ $notifIcon }}"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 notification-content">
+                                        <p class="text-sm text-slate-700 leading-snug mb-1">Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span class="font-bold">{{ $statusText }}</span></p>
+                                        <p class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i><span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span></p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="p-8 text-center notification-item">
+                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 notification-icon">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-medium notification-content">Belum ada pembaruan status.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER PROFILE -->
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 user-profile">
+                    <div class="hidden sm:block text-right user-info">
+                        <p class="text-sm font-bold text-slate-800 leading-tight user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
+                        <p class="text-xs font-medium text-slate-500 capitalize user-role">{{ Auth::user()->role ?? 'staff' }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100 user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'S', 0, 1)) }}
+                    </div>
+                </div>
             </div>
-        </aside>
+        </header>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <header class="top-navbar">
-                <div class="nav-left">
-                    <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Pengaturan Akun</h5>
-                </div>
-                <div class="nav-right">
-                    
-                    <!-- AREA NOTIFIKASI -->
-                    <div class="nav-icon" id="notificationToggle">
-                        <i class="far fa-bell" style="font-size: 20px;"></i>
-                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
-                        
-                        <!-- DROPDOWN NOTIFIKASI STAFF -->
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            <div class="notification-header">
-                                Notifikasi Pengajuan Saya
-                            </div>
-                            <ul class="notification-list">
-                                @forelse($notifications as $notif)
-                                    @php
-                                        // Set style notif berdasarkan status
-                                        $notifIcon = 'fa-file-alt';
-                                        $notifClass = 'notif-info';
-                                        $statusText = 'Sedang diproses';
-                                        
-                                        if($notif->status == 'pending_l1') { $notifClass = 'notif-warning'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
-                                        if($notif->status == 'pending_l2') { $notifClass = 'notif-info'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
-                                        if($notif->status == 'approved') { $notifClass = 'notif-success'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
-                                        if($notif->status == 'rejected') { $notifClass = 'notif-danger'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
-                                    @endphp
-                                    <li class="notification-item" onclick="window.location.href='{{ route('staff.riwayat') ?? '#' }}'" style="cursor: pointer;">
-                                        <div class="notification-icon {{ $notifClass }}"><i class="fas {{ $notifIcon }}"></i></div>
-                                        <div class="notification-content">
-                                            <p>Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span style="color: var(--text-dark); font-weight: 500;">{{ $statusText }}</span></p>
-                                            <span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span>
-                                        </div>
-                                    </li>
-                                @empty
-                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada pembaruan status.</p></div></li>
-                                @endforelse
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- END AREA NOTIFIKASI -->
-
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
-                            <p class="user-role">{{ Auth::user()->role ?? 'staff' }}</p>
-                        </div>
-                        <i class="fas fa-user-circle user-avatar"></i>
-                    </div>
-                </div>
-            </header>
-
-            <main class="content-area">
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar content-area">
+            
+            <div class="max-w-6xl mx-auto">
 
                 <!-- Alert jika ada pesan sukses dari backend -->
                 @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" style="border-radius: 12px; border: none; background-color: #ECFDF5; color: #065F46;" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                    <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-2xl flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-xl"></i>
+                            <span class="font-semibold text-sm">{{ session('success') }}</span>
+                        </div>
+                        <button type="button" class="text-emerald-500 hover:text-emerald-800 focus:outline-none" onclick="this.parentElement.remove();">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
+                    </div>
                 @endif
                 
+                <!-- Alert Error Validasi -->
                 @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" style="border-radius: 12px; border: none; background-color: #FEF2F2; color: #991B1B;" role="alert">
-                    <ul class="mb-0 ps-3">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                    <div class="mb-6 bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl shadow-sm">
+                        <div class="flex items-center gap-2 mb-2 font-bold">
+                            <i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan:
+                        </div>
+                        <ul class="list-disc pl-5 text-sm space-y-1">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
 
-                <div class="row g-4">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    
                     <!-- BAGIAN 1: PROFIL PRIBADI -->
-                    <div class="col-xl-8">
-                        <div class="settings-card h-100">
-                            <h5 class="settings-title"><i class="far fa-user"></i> Informasi Profil</h5>
-                            
-                            <div class="avatar-upload">
-                                <div class="avatar-lg">
-                                    {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                    <div class="xl:col-span-2">
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 sm:p-8 h-full">
+                            <div class="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
+                                <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">
+                                    <i class="fas fa-user-edit"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-1">{{ Auth::user()->name ?? 'Karyawan' }}</h6>
-                                    <p class="text-muted small mb-2">{{ Auth::user()->email ?? 'email@sanzaya.com' }}</p>
-                                    <button class="btn-outline-custom"><i class="fas fa-camera me-1"></i> Ubah Foto</button>
+                                    <h2 class="text-xl font-bold text-slate-800">Informasi Profil Staff</h2>
+                                    <p class="text-slate-500 text-xs mt-0.5">Kelola identitas dan kontak pribadi Anda.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+                                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-50 to-indigo-50 text-brand-600 flex items-center justify-center font-bold text-4xl shadow-sm border-4 border-white ring-1 ring-slate-200">
+                                    {{ strtoupper(substr(Auth::user()->name ?? 'S', 0, 1)) }}
+                                </div>
+                                <div class="text-center sm:text-left pt-2">
+                                    <h5 class="text-lg font-bold text-slate-800 mb-1">{{ Auth::user()->name ?? 'Karyawan' }}</h5>
+                                    <p class="text-slate-500 text-sm mb-3">{{ Auth::user()->email ?? 'email@sanzaya.com' }}</p>
+                                    <button class="bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-300 hover:bg-brand-50 text-xs font-bold px-4 py-2 rounded-lg transition-all shadow-sm">
+                                        <i class="fas fa-camera me-1"></i> Ubah Foto Profil
+                                    </button>
                                 </div>
                             </div>
 
-                            <form id="profileForm" onsubmit="event.preventDefault(); saveProfile();">
-                                
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Nama Lengkap</label>
-                                        <input type="text" name="name" class="input-custom" value="{{ Auth::user()->name ?? '' }}" required>
+                            <form id="profileForm" action="{{ route('staff.settings.update') ?? '#' }}" method="POST">
+                                @csrf
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                                        <input type="text" name="name" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" value="{{ Auth::user()->name ?? '' }}" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Email Pribadi / Perusahaan</label>
-                                        <input type="email" name="email" class="input-custom" value="{{ Auth::user()->email ?? '' }}" required>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email Perusahaan / Pribadi</label>
+                                        <input type="email" name="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" value="{{ Auth::user()->email ?? '' }}" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Nomor Handphone</label>
-                                        <input type="text" name="phone" class="input-custom" value="{{ Auth::user()->phone ?? '' }}" placeholder="08xxx">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nomor Handphone</label>
+                                        <input type="text" name="phone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" value="{{ Auth::user()->phone ?? '' }}" placeholder="08xxx">
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Divisi / Departemen</label>
-                                        <input type="text" class="input-custom" value="{{ Auth::user()->division ?? 'Tidak Diketahui' }}" disabled>
-                                        <small class="text-muted" style="font-size: 10px;">Hubungi HRD / Admin jika ada perubahan divisi.</small>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Divisi / Departemen</label>
+                                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-medium outline-none cursor-not-allowed uppercase" value="{{ Auth::user()->division ?? 'Staff' }}" disabled>
+                                        <p class="text-[10px] text-slate-400 mt-2 italic">Hubungi Admin / HRD jika ada perubahan divisi.</p>
                                     </div>
                                 </div>
 
-                                <div class="mt-4 pt-3 text-end">
-                                    <button type="submit" class="btn-save"><i class="fas fa-save me-2"></i> Simpan Perubahan Profil</button>
+                                <div class="mt-8 pt-6 border-t border-slate-100 text-right">
+                                    <button type="submit" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 text-sm">
+                                        <i class="fas fa-save"></i> Simpan Perubahan Profil
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
                     <!-- BAGIAN 2: KEAMANAN & PASSWORD -->
-                    <div class="col-xl-4">
-                        <div class="settings-card h-100">
-                            <h5 class="settings-title"><i class="fas fa-shield-alt"></i> Keamanan Sandi</h5>
-                            <p class="text-muted small mb-4">Pastikan Anda menggunakan kata sandi yang kuat dan tidak mudah ditebak untuk menjaga keamanan akun Anda.</p>
+                    <div class="xl:col-span-1">
+                        <div class="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 sm:p-8 h-full">
+                            <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-lg">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-slate-800">Keamanan</h2>
+                                    <p class="text-slate-500 text-xs mt-0.5">Ubah kata sandi akun Anda.</p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-slate-500 text-xs mb-6 leading-relaxed">Pastikan Anda menggunakan kata sandi yang kuat dan tidak mudah ditebak untuk menjaga keamanan akun Anda.</p>
 
-                            <form id="passwordForm" onsubmit="event.preventDefault(); savePassword();">
-                                
-                                <div class="mb-3">
-                                    <label class="form-label-custom">Password Saat Ini</label>
-                                    <div class="input-group">
-                                        <input type="password" name="current_password" id="current_password" class="form-control input-custom" style="border-radius: 10px 0 0 10px;" required>
-                                        <button class="btn btn-light border" style="border-color: #CBD5E1 !important; border-radius: 0 10px 10px 0;" type="button" onclick="togglePassword('current_password', this)">
+                            <form id="passwordForm" action="{{ route('staff.settings.update') ?? '#' }}" method="POST">
+                                @csrf
+                                <div class="mb-5">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Password Saat Ini</label>
+                                    <div class="relative">
+                                        <input type="password" name="current_password" id="current_password" class="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" required>
+                                        <button type="button" onclick="togglePassword('current_password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-500 focus:outline-none transition-colors">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label class="form-label-custom">Password Baru</label>
-                                    <div class="input-group">
-                                        <input type="password" name="new_password" id="new_password" class="form-control input-custom" style="border-radius: 10px 0 0 10px;" required>
-                                        <button class="btn btn-light border" style="border-color: #CBD5E1 !important; border-radius: 0 10px 10px 0;" type="button" onclick="togglePassword('new_password', this)">
+                                <div class="mb-5">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Password Baru</label>
+                                    <div class="relative">
+                                        <input type="password" name="new_password" id="new_password" class="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" required>
+                                        <button type="button" onclick="togglePassword('new_password', this)" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-500 focus:outline-none transition-colors">
                                             <i class="far fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="mb-4">
-                                    <label class="form-label-custom">Konfirmasi Password Baru</label>
-                                    <input type="password" name="new_password_confirmation" class="input-custom" required>
+                                <div class="mb-8">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Konfirmasi Password Baru</label>
+                                    <input type="password" name="new_password_confirmation" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" required>
                                 </div>
 
-                                <button type="submit" class="btn-save w-100"><i class="fas fa-key me-2"></i> Perbarui Password</button>
+                                <!-- Field tersembunyi agar form validasi updateProfile lolos -->
+                                <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+                                <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 text-sm">
+                                    <i class="fas fa-key"></i> Perbarui Password
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
 
-            </main>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <!-- INTERACTIVE SCRIPTS -->
     <script>
-        // --- LOGIKA NOTIFIKASI DROPDOWN ---
-        const notificationToggle = document.getElementById('notificationToggle');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-        const badgeDot = document.querySelector('.badge-dot');
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Notification Dropdown Logic ---
+            const notifBtn = document.getElementById('notifBtn');
+            const notifDropdown = document.getElementById('notifDropdown');
+            const badgeDot = document.querySelector('.badge-dot');
 
-        if(notificationToggle) {
-            notificationToggle.addEventListener('click', function(event) {
-                event.stopPropagation(); // Mencegah klik menyebar ke window
-                notificationDropdown.classList.toggle('show');
-                // Jika dropdown dibuka, sembunyikan titik merah
-                if(notificationDropdown.classList.contains('show') && badgeDot) {
-                    badgeDot.classList.remove('active');
+            if(notifBtn && notifDropdown) {
+                notifBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = notifDropdown.classList.contains('invisible');
+                    
+                    if (isHidden) {
+                        notifDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
+                        notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                        if(badgeDot) badgeDot.style.display = 'none'; // hide ping
+                    } else {
+                        closeNotif();
+                    }
+                });
+
+                function closeNotif() {
+                    notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                    notifDropdown.classList.add('opacity-0', 'translate-y-[-10px]');
+                    setTimeout(() => notifDropdown.classList.add('invisible'), 300);
                 }
-            });
 
-            // Tutup dropdown jika klik di luar area
-            window.addEventListener('click', function(event) {
-                if (!notificationToggle.contains(event.target)) {
-                    notificationDropdown.classList.remove('show');
-                }
-            });
-        }
-
-        // --- LOGIKA RESPONSIVE SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-active');
-                overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
+                window.addEventListener('click', (e) => {
+                    if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                        closeNotif();
+                    }
+                });
             }
-        });
-        
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-active');
-            overlay.classList.remove('active');
+
+            // --- Toggle Sidebar Logic (Mobile & Desktop) ---
+            const sidebar = document.getElementById('sidebar');
+            const openSidebarBtn = document.getElementById('openSidebarBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            // Open/Collapse Handler
+            if(openSidebarBtn) {
+                openSidebarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.innerWidth < 1024) {
+                        // Logika Mobile (Offcanvas Overlay)
+                        sidebar.classList.remove('-translate-x-full');
+                        mobileOverlay.classList.remove('hidden');
+                        setTimeout(() => mobileOverlay.classList.replace('opacity-0', 'opacity-100'), 10);
+                    } else {
+                        // Logika Desktop (Collapse Kecil)
+                        sidebar.classList.toggle('collapsed');
+                    }
+                });
+            }
+
+            // Close Mobile Sidebar
+            function closeSidebar() {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+                }
+            }
+
+            if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', closeSidebar);
         });
 
         // --- FUNGSI LIHAT/SEMBUNYIKAN PASSWORD ---
@@ -421,37 +459,6 @@
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
             }
-        }
-
-        // --- SIMULASI SIMPAN PROFIL ---
-        function saveProfile() {
-            Swal.fire({
-                icon: 'success',
-                title: 'Profil Diperbarui!',
-                text: 'Perubahan data profil Anda berhasil disimpan.',
-                confirmButtonColor: '#0A539B'
-            });
-        }
-
-        // --- SIMULASI SIMPAN PASSWORD ---
-        function savePassword() {
-            let form = document.getElementById('passwordForm');
-            let pass = document.getElementById('new_password').value;
-            let conf = document.getElementsByName('new_password_confirmation')[0].value;
-
-            if(pass !== conf) {
-                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Password baru dan konfirmasi tidak cocok!' });
-                return;
-            }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Password Diubah!',
-                text: 'Silakan gunakan password baru pada login berikutnya.',
-                confirmButtonColor: '#0A539B'
-            }).then(() => {
-                form.reset();
-            });
         }
     </script>
 </body>

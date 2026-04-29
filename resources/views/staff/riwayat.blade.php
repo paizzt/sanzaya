@@ -3,159 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pengajuan - Satu Sanzaya</title>
+    <title>Riwayat Pengajuan UC - Satu Sanzaya</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-blue: #0A539B;
-            --light-blue: #E5F0FF;
-            --sidebar-bg: #FAFAFA;
-            --text-dark: #333333;
-            --text-gray: #888888;
-            --border-color: #EAEAEA;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px; 
-        }
-
-        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
-        .wrapper { display: flex; height: 100vh; }
-
-        /* --- SIDEBAR KONSISTEN --- */
-        .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
-        .logo-img { max-width: 140px; transition: 0.3s; }
-        .sidebar.collapsed .logo-img { max-width: 40px; }
-        .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
-        .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
-        .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
-        .menu-text { margin-left: 15px; transition: opacity 0.2s; }
-        .sidebar.collapsed .menu-text { opacity: 0; display: none; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
-
-        /* --- MAIN CONTENT & NAVBAR --- */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
-        .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-info { text-align: right; line-height: 1.2; }
-        .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: lowercase; }
-        .user-avatar { font-size: 32px; color: var(--text-dark); }
-        .content-area { padding: 30px 40px; flex-grow: 1; overflow-y: auto; }
-
-        /* --- STYLING HALAMAN RIWAYAT --- */
-        .filter-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
-        .table-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .table th { font-weight: 600; font-size: 12px; color: var(--text-gray); text-transform: uppercase; padding: 15px 20px; background-color: #FAFAFA; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px; }
-        .table td { padding: 15px 20px; vertical-align: middle; font-size: 14px; color: var(--text-dark); border-bottom: 1px dashed var(--border-color); }
-        .table tbody tr:last-child td { border-bottom: none; }
-        .table tbody tr:hover td { background-color: #F8FBFF; }
-
-        /* Badge Status */
-        .status-pill { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
-        .bg-success-light { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
-        .bg-warning-light { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
-        .bg-info-light { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
-        .bg-danger-light { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
-
-        .btn-pdf { background-color: #EF4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; transition: 0.2s; text-decoration: none; display: inline-block; }
-        .btn-pdf:hover { background-color: #DC2626; color: white; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); }
-        .btn-pdf.disabled { background-color: #E2E8F0; color: #94A3B8; cursor: not-allowed; box-shadow: none; transform: none; }
-
-        /* --- NOTIFIKASI DROPDOWN --- */
-        .nav-icon { position: relative; cursor: pointer; }
-        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
-        .badge-dot.active { display: block; }
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .notification-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 320px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .notification-dropdown.show { display: block; }
-        .notification-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--text-dark);
-            background-color: #FAFAFA;
-        }
-        .notification-list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .notification-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #F1F5F9;
-            display: flex;
-            align-items: start;
-            gap: 15px;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover { background-color: #F8FAFC; }
-        .notification-item:last-child { border-bottom: none; }
-        .notification-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .notif-success { background-color: #ECFDF5; color: #10B981; }
-        .notif-warning { background-color: #FFFBEB; color: #D97706; }
-        .notif-danger { background-color: #FEF2F2; color: #EF4444; }
-        .notif-info { background-color: #EFF6FF; color: #3B82F6; }
+        /* Smooth transitions */
+        .transition-all-ease { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
-        .notification-content span { font-size: 11px; color: var(--text-gray); }
-
-        /* --- RESPONSIVE --- */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
-        
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            .sidebar.mobile-active { left: 0; }
-            .sidebar-overlay.active { display: block; }
-            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
-            .top-navbar { padding: 0 20px; }
-            .content-area { padding: 20px; }
-            .user-role { display: none; }
+        /* --- DESKTOP COLLAPSE SIDEBAR STYLES --- */
+        @media (min-width: 1024px) {
+            .sidebar.collapsed { width: 88px !important; }
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .sidebar-title,
+            .sidebar.collapsed .badge-count { display: none; opacity: 0; }
+            .sidebar.collapsed .menu-item { justify-content: center; padding-left: 0; padding-right: 0; margin-left: 0.75rem; margin-right: 0.75rem; }
+            .sidebar.collapsed .menu-item i { margin-right: 0 !important; }
+            .sidebar.collapsed .logo-img { max-width: 40px; }
+            .sidebar.collapsed .btn-create span { display: none; }
         }
     </style>
 </head>
-<body>
+<body class="bg-surface text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
 
     <!-- MENGAMBIL DATA RIWAYAT PRIBADI STAFF LANGSUNG -->
     @php
         $userId = \Illuminate\Support\Facades\Auth::id();
-        $riwayat = \App\Models\TravelRequest::where('user_id', $userId)
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+        
+        if(!isset($requests)) {
+            $requests = \App\Models\TravelRequest::where('user_id', $userId)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        }
                     
         // Logika Notifikasi khusus Staff
         $notifications = \App\Models\TravelRequest::where('user_id', $userId)
@@ -165,275 +91,373 @@
         $hasNewNotif = $notifications->count() > 0;
     @endphp
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
-    <div class="wrapper">
+    <!-- SIDEBAR STAFF -->
+    <aside id="sidebar" class="sidebar bg-white w-[280px] h-full border-r border-slate-200 flex flex-col transition-all-ease fixed lg:relative z-50 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo-area">
-                <a href="{{ route('staff.dashboard') ?? '#' }}">
-                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
-                </a>
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-slate-100 px-6 logo-area overflow-hidden">
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="flex items-center group">
+                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img max-w-[140px] group-hover:scale-105 transition-all-ease">
+            </a>
+            <button id="closeSidebarBtn" class="lg:hidden absolute right-4 text-slate-400 hover:text-slate-800">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Menu Utama</p>
+            
+            <a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-border-all w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            
+            <a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl bg-brand-50 text-brand-600 font-medium transition-all-ease">
+                <i class="fas fa-clock-rotate-left w-5 text-center text-lg mr-3"></i>
+                <span class="menu-text">Riwayat Pengajuan</span>
+            </a>
+            
+            <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-file-lines w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengajuan UC</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <div class="border-t border-slate-100"></div>
+            </div>
+            
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Pribadi</p>
+            
+            <a href="{{ route('staff.settings') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-gear w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengaturan Akun</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-slate-100">
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">@csrf</form>
+            <button onclick="document.getElementById('logout-form').submit();" class="menu-item flex items-center px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 font-medium transition-all-ease group mb-3">
+                <i class="fas fa-sign-out-alt w-5 text-center text-lg mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="menu-text">Keluar Sistem</span>
+            </button>
+            
+            <a href="{{ route('staff.pengajuan.create') }}" class="btn-create flex items-center justify-center gap-2 w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                <i class="fas fa-plus"></i> <span class="menu-text">Buat Pengajuan</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-surface relative transition-all-ease">
+        
+        <!-- GLASSMORPHISM NAVBAR -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 transition-all-ease">
+            
+            <div class="flex items-center gap-4 nav-left">
+                <button id="openSidebarBtn" class="hamburger-btn text-slate-500 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-bold text-slate-800">Riwayat Pengajuan UC</h1>
+                </div>
             </div>
 
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('staff.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <!-- Menu Riwayat Pengajuan menjadi Active -->
-                <li><a href="{{ route('staff.riwayat') ?? '#' }}" class="menu-item active"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Pengajuan</span></a></li>
-                <li><a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="menu-item"><i class="fas fa-file-lines menu-icon"></i><span class="menu-text">Pengajuan UC</span></a></li>
-                <li><a href="{{ route('staff.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
-            </ul>
+            <div class="flex items-center gap-4 lg:gap-6 nav-right">
+                <!-- NOTIFICATION BELL WITH PING -->
+                <div class="relative z-50 nav-icon">
+                    <button id="notifBtn" class="relative p-2.5 text-slate-400 hover:text-brand-600 bg-slate-50 hover:bg-brand-50 rounded-full transition-all-ease focus:outline-none">
+                        <i class="far fa-bell text-xl"></i>
+                        @if($hasNewNotif)
+                            <span class="absolute top-2 right-2.5 flex h-2.5 w-2.5 badge-dot">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white"></span>
+                            </span>
+                        @endif
+                    </button>
 
-            <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">@csrf</form>
-                <a href="#" class="menu-item" style="color: var(--text-gray);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-arrow-right-from-bracket menu-icon"></i><span class="menu-text">Keluar</span>
-                </a>
+                    <!-- DROPDOWN NOTIFIKASI -->
+                    <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible transform translate-y-[-10px] transition-all duration-300 ease-out notification-dropdown">
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center notification-header">
+                            <h3 class="font-semibold text-slate-800">Notifikasi Status</h3>
+                            @if($hasNewNotif)
+                                <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2 py-1 rounded-md">{{ $notifications->count() }} Update</span>
+                            @endif
+                        </div>
+                        <div class="max-h-[320px] overflow-y-auto no-scrollbar notification-list">
+                            @forelse($notifications as $notif)
+                                @php
+                                    $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-file-alt'; $statusText = 'Sedang diproses';
+                                    if($notif->status == 'pending_l1') { $notifClass = 'bg-amber-50 text-amber-500 group-hover:bg-amber-100'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
+                                    if($notif->status == 'pending_l2') { $notifClass = 'bg-brand-50 text-brand-500 group-hover:bg-brand-100'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
+                                    if($notif->status == 'approved') { $notifClass = 'bg-emerald-50 text-emerald-500 group-hover:bg-emerald-100'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
+                                    if($notif->status == 'selesai') { $notifClass = 'bg-emerald-50 text-emerald-500 group-hover:bg-emerald-100'; $notifIcon = 'fa-check-double'; $statusText = 'Tuntas (Ada Result)'; }
+                                    if($notif->status == 'rejected') { $notifClass = 'bg-rose-50 text-rose-500 group-hover:bg-rose-100'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
+                                @endphp
+                                <a href="{{ route('staff.riwayat') ?? '#' }}" class="flex items-start gap-4 p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors group notification-item">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors {{ $notifClass }} notification-icon">
+                                        <i class="fas {{ $notifIcon }}"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 notification-content">
+                                        <p class="text-sm text-slate-700 leading-snug mb-1">Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span class="font-bold">{{ $statusText }}</span></p>
+                                        <p class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i><span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span></p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="p-8 text-center notification-item">
+                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 notification-icon">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-medium notification-content">Belum ada pembaruan status.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER PROFILE -->
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 user-profile">
+                    <div class="hidden sm:block text-right user-info">
+                        <p class="text-sm font-bold text-slate-800 leading-tight user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
+                        <p class="text-xs font-medium text-slate-500 capitalize user-role">{{ Auth::user()->role ?? 'staff' }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100 user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'S', 0, 1)) }}
+                    </div>
+                </div>
             </div>
-        </aside>
+        </header>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <header class="top-navbar">
-                <div class="nav-left">
-                    <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Riwayat Pengajuan UC</h5>
-                </div>
-                <div class="nav-right">
-                    
-                    <!-- AREA NOTIFIKASI -->
-                    <div class="nav-icon" id="notificationToggle">
-                        <i class="far fa-bell" style="font-size: 20px;"></i>
-                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
-                        
-                        <!-- DROPDOWN NOTIFIKASI STAFF -->
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            <div class="notification-header">
-                                Notifikasi Pengajuan Saya
-                            </div>
-                            <ul class="notification-list">
-                                @forelse($notifications as $notif)
-                                    @php
-                                        // Set style notif berdasarkan status
-                                        $notifIcon = 'fa-file-alt';
-                                        $notifClass = 'notif-info';
-                                        $statusText = 'Sedang diproses';
-                                        
-                                        if($notif->status == 'pending_l1') { $notifClass = 'notif-warning'; $notifIcon = 'fa-hourglass-half'; $statusText = 'Menunggu ACC Manajer'; }
-                                        if($notif->status == 'pending_l2') { $notifClass = 'notif-info'; $notifIcon = 'fa-money-check'; $statusText = 'Menunggu Pencairan Finance'; }
-                                        if($notif->status == 'approved') { $notifClass = 'notif-success'; $notifIcon = 'fa-check-circle'; $statusText = 'Disetujui & Dicairkan'; }
-                                        if($notif->status == 'rejected') { $notifClass = 'notif-danger'; $notifIcon = 'fa-times-circle'; $statusText = 'Ditolak'; }
-                                    @endphp
-                                    <li class="notification-item" onclick="window.location.href='{{ route('staff.riwayat') ?? '#' }}'" style="cursor: pointer;">
-                                        <div class="notification-icon {{ $notifClass }}"><i class="fas {{ $notifIcon }}"></i></div>
-                                        <div class="notification-content">
-                                            <p>Pengajuan ke <strong>{{ $notif->destination }}</strong>: <br><span style="color: var(--text-dark); font-weight: 500;">{{ $statusText }}</span></p>
-                                            <span>Update: {{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</span>
-                                        </div>
-                                    </li>
-                                @empty
-                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada pembaruan status.</p></div></li>
-                                @endforelse
-                            </ul>
-                        </div>
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar content-area">
+            
+            @if(session('success'))
+                <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-2xl flex justify-between items-center shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-xl"></i>
+                        <span class="font-semibold text-sm">{{ session('success') }}</span>
                     </div>
-                    <!-- END AREA NOTIFIKASI -->
+                    <button type="button" class="text-emerald-500 hover:text-emerald-800 focus:outline-none" onclick="this.parentElement.remove();">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+            @endif
 
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Nama Staff' }}</p>
-                            <p class="user-role">{{ Auth::user()->role ?? 'staff' }}</p>
-                        </div>
-                        <i class="fas fa-user-circle user-avatar" style="color: var(--primary-blue);"></i>
+            <!-- FILTER CARD -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div class="col-span-1 md:col-span-5">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Filter Status</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white appearance-none">
+                            <option value="">Semua Status</option>
+                            <option value="pending">Sedang Diproses (L1 / L2)</option>
+                            <option value="approved">Perlu Upload Result (Dicairkan)</option>
+                            <option value="selesai">Tuntas 100% (Ada Result)</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1 md:col-span-5">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Bulan Pengajuan</label>
+                        <input type="month" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700">
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-xl transition-colors shadow-sm text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
                     </div>
                 </div>
-            </header>
+            </div>
 
-            <main class="content-area">
+            <!-- TABLE CARD -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-soft overflow-hidden flex flex-col">
                 
-                <!-- Filter Card -->
-                <div class="filter-card">
-                    <div class="row align-items-end g-3">
-                        <div class="col-md-4">
-                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Cari Tujuan</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Ketik kota tujuan...">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Filter Status</label>
-                            <select class="form-select">
-                                <option value="">Semua Status</option>
-                                <option value="pending_l1">Menunggu Manajer</option>
-                                <option value="pending_l2">Menunggu Finance</option>
-                                <option value="approved">Selesai / Approved</option>
-                                <option value="rejected">Ditolak</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-uppercase text-muted fw-bold" style="font-size: 11px;">Urutkan</label>
-                            <select class="form-select">
-                                <option value="terbaru">Terbaru Diajukan</option>
-                                <option value="terlama">Paling Lama</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="btn w-100" style="background: var(--primary-blue); color: white; border-radius: 8px; height: 38px; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="fas fa-plus"></i> Buat Baru
-                            </a>
-                        </div>
-                    </div>
+                <div class="px-6 py-5 border-b border-slate-100 flex items-center bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 m-0 text-base">
+                        <span class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="fas fa-clock-rotate-left text-sm"></i>
+                        </span>
+                        Riwayat Perjalanan Dinas Saya
+                    </h3>
                 </div>
 
-                <!-- Table Card -->
-                <div class="table-card table-responsive">
-                    <table class="table table-borderless mb-0 align-middle">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[900px]">
                         <thead>
-                            <tr>
-                                <th style="width: 25%;">Tujuan & Durasi</th>
-                                <th style="width: 15%;">Tgl Pengajuan</th>
-                                <th style="width: 20%;">Status Saat Ini</th>
-                                <th style="width: 25%;">Catatan Validator</th>
-                                <th style="width: 15%; text-align: center;">Aksi Dokumen</th>
+                            <tr class="bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="p-5 w-[20%]">Rute & Tujuan</th>
+                                <th class="p-5 w-[20%]">Waktu Pelaksanaan</th>
+                                <th class="p-5 w-[15%]">Rincian Biaya</th>
+                                <th class="p-5 w-[20%]">Status Saat Ini</th>
+                                <th class="p-5 w-[25%] text-center">Tindakan</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($riwayat as $req)
-                                <tr>
-                                    <td>
-                                        <p class="mb-0 fw-bold text-dark" style="font-size: 14px;">{{ $req->destination }}</p>
-                                        <p class="mb-0 text-muted" style="font-size: 12px;">
-                                            <i class="far fa-calendar-alt me-1"></i> 
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($requests as $req)
+                                <tr class="hover:bg-brand-50/50 transition-colors duration-200 group">
+                                    <td class="p-5 align-middle">
+                                        <p class="font-bold text-slate-800 text-sm mb-0.5 leading-tight flex items-center gap-2">
+                                            {{ $req->departure }} <i class="fas fa-arrow-right text-[10px] text-slate-400"></i> {{ $req->destination }}
+                                        </p>
+                                        <p class="text-xs font-medium text-slate-500">Tgl Pengajuan: {{ \Carbon\Carbon::parse($req->created_at)->format('d M Y') }}</p>
+                                    </td>
+                                    <td class="p-5 align-middle">
+                                        <p class="font-medium text-slate-700 text-sm mb-0 flex items-center gap-2">
+                                            <i class="far fa-calendar-alt text-slate-400"></i>
                                             {{ \Carbon\Carbon::parse($req->start_date)->format('d M') }} - {{ \Carbon\Carbon::parse($req->end_date)->format('d M Y') }}
                                         </p>
                                     </td>
-                                    <td>
-                                        <p class="mb-0 text-dark" style="font-size: 13px;">{{ \Carbon\Carbon::parse($req->created_at)->format('d M Y') }}</p>
-                                        <p class="mb-0 text-muted" style="font-size: 11px;">{{ \Carbon\Carbon::parse($req->created_at)->format('H:i') }} WITA</p>
+                                    <td class="p-5 align-middle">
+                                        @if($req->total_biaya > 0)
+                                            <p class="font-bold text-emerald-600 text-sm m-0">Rp {{ number_format($req->total_biaya, 0, ',', '.') }}</p>
+                                        @else
+                                            <p class="text-xs font-medium text-slate-400 italic m-0">Menunggu Kalkulasi</p>
+                                        @endif
                                     </td>
-                                    <td>
+                                    <td class="p-5 align-middle">
                                         @if($req->status == 'pending_l1')
-                                            <span class="status-pill bg-warning-light">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200/60 shadow-sm">
                                                 <i class="fas fa-hourglass-half"></i> Menunggu Manajer
                                             </span>
                                         @elseif($req->status == 'pending_l2')
-                                            <span class="status-pill bg-info-light">
-                                                <i class="fas fa-money-check"></i> Menunggu Finance
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-600 border border-indigo-200/60 shadow-sm">
+                                                <i class="fas fa-money-check"></i> Proses Pencairan
                                             </span>
                                         @elseif($req->status == 'approved')
-                                            <span class="status-pill bg-success-light">
-                                                <i class="fas fa-check-circle"></i> Selesai (Approved)
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200/60 shadow-sm">
+                                                <i class="fas fa-exclamation-circle"></i> Cair (Butuh Result)
+                                            </span>
+                                        @elseif($req->status == 'selesai')
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-600 border border-brand-200/60 shadow-sm">
+                                                <i class="fas fa-check-double"></i> Tuntas (Ada Result)
                                             </span>
                                         @elseif($req->status == 'rejected')
-                                            <span class="status-pill bg-danger-light">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200/60 shadow-sm">
                                                 <i class="fas fa-times-circle"></i> Ditolak
                                             </span>
                                         @endif
                                     </td>
-                                    <td>
-                                        @if($req->status == 'rejected' || $req->l1_note || $req->l2_note)
-                                            <div style="font-size: 12px; line-height: 1.4;">
-                                                @if($req->l1_note)
-                                                    <span class="text-muted d-block"><strong>Manajer:</strong> "{{ $req->l1_note }}"</span>
-                                                @endif
-                                                @if($req->l2_note)
-                                                    <span class="text-muted d-block mt-1"><strong>Finance:</strong> "{{ $req->l2_note }}"</span>
-                                                @endif
-                                            </div>
-                                        @else
-                                            <span class="text-muted fst-italic small">Belum ada catatan.</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <!-- Logika Cetak PDF: Hanya jika status approved -->
-                                        @if($req->status == 'approved')
-                                            <a href="{{ url('/pengajuan/'.$req->id.'/pdf') }}" target="_blank" class="btn-pdf" title="Unduh Surat Pengajuan UC">
-                                                <i class="fas fa-file-pdf me-1"></i> Unduh PDF
+                                    <td class="p-5 align-middle">
+                                        <div class="flex flex-wrap items-center justify-center gap-2">
+                                            
+                                            <!-- Tombol Lacak Status -->
+                                            <a href="{{ route('staff.pengajuan.track', $req->id) }}" class="inline-flex items-center justify-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-300 hover:bg-brand-50 text-xs font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm" title="Lacak Status Dokumen">
+                                                <i class="fas fa-search"></i> Lacak
                                             </a>
-                                        @else
-                                            <button type="button" class="btn-pdf disabled" title="PDF belum tersedia (Menunggu Persetujuan)" onclick="alertPending()">
-                                                <i class="fas fa-file-pdf me-1"></i> Unduh PDF
-                                            </button>
-                                        @endif
+
+                                            @if($req->status == 'approved' || $req->status == 'selesai')
+                                                <!-- Tombol Surat Tugas (PDF) -->
+                                                <a href="{{ route('pengajuan.cetak', $req->id) }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 bg-rose-50 border border-rose-100 text-rose-500 hover:text-white hover:bg-rose-500 text-xs font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm" title="Cetak Surat Tugas">
+                                                    <i class="fas fa-file-pdf"></i> SPPD
+                                                </a>
+                                            @endif
+
+                                            @if($req->status == 'approved')
+                                                <!-- Tombol Upload Result -->
+                                                <a href="{{ route('pengajuan.klaim', $req->id) }}" class="inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm" title="Lengkapi Nota & Result">
+                                                    <i class="fas fa-cloud-upload-alt"></i> Upload Result
+                                                </a>
+                                            @elseif($req->status == 'selesai')
+                                                <!-- Tombol Cetak PDF Result -->
+                                                <a href="{{ route('pengajuan.result.pdf', $req->id) }}" target="_blank" class="inline-flex items-center justify-center gap-1.5 bg-brand-50 border border-brand-100 text-brand-600 hover:text-white hover:bg-brand-600 text-xs font-bold px-3 py-1.5 rounded-lg transition-all shadow-sm" title="Cetak PDF Result">
+                                                    <i class="fas fa-file-contract"></i> Laporan Result
+                                                </a>
+                                            @endif
+
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-5">
-                                        <i class="fas fa-folder-open fa-3x mb-3" style="color: #CBD5E1;"></i>
-                                        <h6 class="fw-bold text-dark mb-1">Belum Ada Riwayat</h6>
-                                        <p class="text-muted small mb-3">Anda belum pernah mengajukan perjalanan dinas (UC).</p>
-                                        <a href="{{ route('staff.pengajuan.create') ?? '#' }}" class="btn btn-sm" style="background: var(--light-blue); color: var(--primary-blue); font-weight: 600; padding: 8px 20px; border-radius: 8px;">
-                                            Buat Pengajuan Sekarang
-                                        </a>
+                                    <td colspan="5" class="p-10 text-center">
+                                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 text-3xl mx-auto mb-4">
+                                            <i class="fas fa-folder-open"></i>
+                                        </div>
+                                        <h4 class="text-slate-700 font-bold mb-1 text-lg">Riwayat Kosong</h4>
+                                        <p class="text-sm text-slate-500 max-w-md mx-auto">Anda belum pernah mengajukan perjalanan dinas (UC).</p>
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-            </main>
         </div>
-    </div>
+    </main>
 
-    <!-- PENTING: Panggil library SweetAlert2 untuk Popup -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <!-- INTERACTIVE SCRIPTS -->
     <script>
-        // --- LOGIKA NOTIFIKASI DROPDOWN ---
-        const notificationToggle = document.getElementById('notificationToggle');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-        const badgeDot = document.querySelector('.badge-dot');
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Notification Dropdown Logic ---
+            const notifBtn = document.getElementById('notifBtn');
+            const notifDropdown = document.getElementById('notifDropdown');
+            const badgeDot = document.querySelector('.badge-dot');
 
-        if(notificationToggle) {
-            notificationToggle.addEventListener('click', function(event) {
-                event.stopPropagation(); // Mencegah klik menyebar ke window
-                notificationDropdown.classList.toggle('show');
-                // Jika dropdown dibuka, sembunyikan titik merah
-                if(notificationDropdown.classList.contains('show') && badgeDot) {
-                    badgeDot.classList.remove('active');
+            if(notifBtn && notifDropdown) {
+                notifBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = notifDropdown.classList.contains('invisible');
+                    
+                    if (isHidden) {
+                        notifDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
+                        notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                        if(badgeDot) badgeDot.style.display = 'none'; // hide ping
+                    } else {
+                        closeNotif();
+                    }
+                });
+
+                function closeNotif() {
+                    notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                    notifDropdown.classList.add('opacity-0', 'translate-y-[-10px]');
+                    setTimeout(() => notifDropdown.classList.add('invisible'), 300);
                 }
-            });
 
-            // Tutup dropdown jika klik di luar area
-            window.addEventListener('click', function(event) {
-                if (!notificationToggle.contains(event.target)) {
-                    notificationDropdown.classList.remove('show');
-                }
-            });
-        }
-
-        // --- LOGIKA RESPONSIVE SIDEBAR ---
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-active');
-                overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
+                window.addEventListener('click', (e) => {
+                    if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                        closeNotif();
+                    }
+                });
             }
-        });
-        
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-active');
-            overlay.classList.remove('active');
-        });
 
-        // Peringatan jika menekan tombol PDF yang belum disetujui
-        function alertPending() {
-            Swal.fire({
-                icon: 'info',
-                title: 'Dokumen Belum Tersedia',
-                text: 'PDF hanya dapat diunduh jika pengajuan Anda telah disetujui (Approved) oleh Manajer dan Finance.',
-                confirmButtonColor: '#0A539B'
-            });
-        }
+            // --- Toggle Sidebar Logic (Mobile & Desktop) ---
+            const sidebar = document.getElementById('sidebar');
+            const openSidebarBtn = document.getElementById('openSidebarBtn');
+            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            // Open/Collapse Handler
+            if(openSidebarBtn) {
+                openSidebarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.innerWidth < 1024) {
+                        // Logika Mobile (Offcanvas Overlay)
+                        sidebar.classList.remove('-translate-x-full');
+                        mobileOverlay.classList.remove('hidden');
+                        setTimeout(() => mobileOverlay.classList.replace('opacity-0', 'opacity-100'), 10);
+                    } else {
+                        // Logika Desktop (Collapse Kecil)
+                        sidebar.classList.toggle('collapsed');
+                    }
+                });
+            }
+
+            // Close Mobile Sidebar
+            function closeSidebar() {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
+                }
+            }
+
+            if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', closeSidebar);
+        });
     </script>
 </body>
 </html>

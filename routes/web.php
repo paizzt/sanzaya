@@ -49,9 +49,21 @@ Route::middleware(['auth'])->group(function () {
     // Fitur Dokumen & Tracking
     Route::get('/pengajuan/{id}/pdf', [PengajuanController::class, 'cetakPDF'])->name('pengajuan.cetak');
     Route::get('/pengajuan/{id}/track', [PengajuanController::class, 'track'])->name('staff.pengajuan.track');
-    Route::get('/arsip', function () {
-        return view('shared.arsip');
-    })->name('arsip.index')->middleware('role:manager,hrd,kepala marketing,finance,admin');
+    
+    // Fitur KLAIM & RESULT (Upload Nota & Cetak Hasil)
+    Route::get('/pengajuan/{id}/klaim', [PengajuanController::class, 'klaimForm'])->name('pengajuan.klaim');
+    Route::post('/pengajuan/{id}/klaim', [PengajuanController::class, 'submitKlaim'])->name('pengajuan.klaim.store');
+    Route::get('/pengajuan/{id}/result-pdf', [PengajuanController::class, 'cetakResult'])->name('pengajuan.result.pdf');
+
+    // === RUTE ARSIP YANG SEBELUMNYA HILANG ===
+    Route::get('/arsip', function() {
+        // Ambil data SPPD yang sudah selesai atau ditolak (Arsip)
+        $arsip = \App\Models\TravelRequest::with('user')
+                    ->whereIn('status', ['approved', 'selesai', 'rejected'])
+                    ->orderBy('updated_at', 'desc')
+                    ->get();
+        return view('shared.arsip', compact('arsip'));
+    })->name('arsip.index');
 });
 
 /*
@@ -74,7 +86,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Logs & Settings
     Route::get('/riwayat-perubahan', [ActivityLogController::class, 'index'])->name('admin.riwayat.perubahan');
     Route::get('/settings', function () { return view('admin.settings'); })->name('admin.settings');
-    Route::post('/settings', [AuthController::class, 'updateProfile'])->name('admin.settings.update'); // Tambah rute simpan
+    Route::post('/settings', [AuthController::class, 'updateProfile'])->name('admin.settings.update'); 
 });
 
 /*
@@ -107,7 +119,7 @@ Route::middleware(['auth', 'role:manager,hrd,kepala marketing'])->prefix('manage
     Route::get('/dashboard', [ManagerController::class, 'index'])->name('manager.dashboard');
     Route::get('/history', function () { return view('manager.history'); })->name('manager.history');
     
-    // Manager juga boleh buat pengajuan (Direct to Finance)
+    // Manager juga boleh buat pengajuan (Direct to Finance / Mewakilkan Staff)
     Route::get('/pengajuan', [PengajuanController::class, 'create'])->name('manager.pengajuan.create');
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('manager.pengajuan.store');
 

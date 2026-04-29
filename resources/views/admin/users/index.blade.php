@@ -6,343 +6,339 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Kelola Data Pengguna - Satu Sanzaya</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        surface: '#f8fafc',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --primary-blue: #0A539B;
-            --light-blue: #E5F0FF;
-            --sidebar-bg: #FAFAFA;
-            --text-dark: #333333;
-            --text-gray: #888888;
-            --border-color: #EAEAEA;
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 80px; 
-        }
-
-        body { font-family: 'Poppins', sans-serif; background-color: #F8F9FA; margin: 0; overflow-x: hidden; }
-        .wrapper { display: flex; height: 100vh; }
-
-        /* --- SIDEBAR --- */
-        .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; z-index: 100; height: 100vh; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
-        .logo-area { height: 80px; display: flex; align-items: center; justify-content: center; padding: 20px; transition: 0.3s; }
-        .logo-img { max-width: 140px; transition: 0.3s; }
-        .sidebar.collapsed .logo-img { max-width: 40px; }
-        .sidebar-menu { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; }
-        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-gray); text-decoration: none; border-radius: 10px; margin-bottom: 5px; transition: 0.2s; font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; }
-        .menu-item:hover { background-color: var(--border-color); color: var(--text-dark); }
-        .menu-item.active { background-color: var(--light-blue); color: var(--primary-blue); font-weight: 600;}
-        .menu-icon { font-size: 18px; min-width: 30px; text-align: center; }
-        .menu-text { margin-left: 15px; transition: opacity 0.2s; }
-        .sidebar.collapsed .menu-text { opacity: 0; display: none; }
-        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border-color); }
-
-        /* --- MAIN CONTENT --- */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; width: calc(100% - var(--sidebar-width)); transition: width 0.3s ease; }
-        .sidebar.collapsed ~ .main-content { width: calc(100% - var(--sidebar-collapsed-width)); }
-        .top-navbar { height: 80px; background-color: #FFFFFF; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .hamburger-btn { background: none; border: none; font-size: 24px; color: var(--text-dark); cursor: pointer; padding: 0; }
-        .nav-right { display: flex; align-items: center; gap: 25px; position: relative; } /* Tambah relative untuk dropdown */
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-info { text-align: right; line-height: 1.2; }
-        .user-name { font-weight: 600; font-size: 14px; color: var(--text-dark); margin: 0; }
-        .user-role { font-size: 11px; color: var(--text-gray); margin: 0; text-transform: lowercase; }
-        .user-avatar { font-size: 32px; color: var(--text-dark); }
-        .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
-
-        /* --- STYLING HALAMAN KELOLA DATA --- */
-        .filter-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
-        .table-card { background: #FFFFFF; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .table th { font-weight: 600; font-size: 12px; color: var(--text-gray); text-transform: uppercase; padding: 15px 20px; background-color: #FAFAFA; border-bottom: 1px solid var(--border-color); }
-        .table td { padding: 15px 20px; vertical-align: middle; font-size: 14px; color: var(--text-dark); border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
-        .table tbody tr:hover td { background-color: #F8FBFF; }
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .badge-jabatan { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; text-transform: capitalize; }
-        .bg-staff { background-color: #E3F2FD; color: #1976D2; }
-        .bg-manager { background-color: #E8F5E9; color: #2E7D32; }
-        .bg-admin { background-color: #FFF3E0; color: #F57C00; }
-        .bg-finance { background-color: #E0F2F1; color: #00897B; }
-
-        .btn-create { background-color: var(--primary-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 500; transition: 0.3s; width: 100%; height: 42px; }
-        .btn-create:hover { background-color: #08427b; color: white; }
-
-        /* --- OFFCANVAS PANEL --- */
-        .offcanvas-end { width: 500px !important; border-left: 1px solid var(--border-color); }
-        .form-label { font-size: 13px; font-weight: 600; color: var(--text-gray); text-transform: uppercase; margin-bottom: 6px; }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid var(--border-color); padding: 10px 15px; font-size: 14px; }
-        .form-control:focus, .form-select:focus { border-color: var(--light-blue); box-shadow: 0 0 0 3px rgba(10, 83, 155, 0.1); }
-        .form-control:disabled, .form-select:disabled { background-color: #F8F9FA; cursor: not-allowed; }
-
-        /* --- DESAIN TOMBOL MINIMALIS (Hover Animasi) --- */
-        .action-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .btn-minimal { background-color: #FFFFFF; border: 1px solid #EAEAEA; border-radius: 12px; color: #334155; font-weight: 600; font-size: 14px; padding: 10px 20px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease-in-out; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .btn-minimal-icon { padding: 10px; width: 44px; height: 44px; }
-        .btn-minimal i { font-size: 16px; }
-        .btn-minimal:hover { border-color: #CBD5E1; background-color: #F8FAFC; transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
-        .btn-minimal.danger { color: #EF4444; }
-        .btn-minimal.danger:hover { background-color: #FEF2F2; border-color: #FECACA; color: #DC2626; }
-        .btn-minimal.primary { color: var(--primary-blue); }
-        .btn-minimal.primary:hover { background-color: #F0F7FF; border-color: #BFDBFE; }
-
-        /* --- NOTIFIKASI DROPDOWN --- */
-        .nav-icon { position: relative; cursor: pointer; }
-        .badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; display: none; }
-        .badge-dot.active { display: block; }
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .notification-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            width: 300px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            display: none;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .notification-dropdown.show { display: block; }
-        .notification-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--text-dark);
-            background-color: #FAFAFA;
-        }
-        .notification-list {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .notification-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #F1F5F9;
-            display: flex;
-            align-items: start;
-            gap: 15px;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover { background-color: #F8FAFC; }
-        .notification-item:last-child { border-bottom: none; }
-        .notification-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .notif-admin { background-color: #EFF6FF; color: #3B82F6; }
-        
-        .notification-content p { margin: 0; font-size: 13px; color: var(--text-dark); line-height: 1.4; }
-        .notification-content span { font-size: 11px; color: var(--text-gray); }
+        /* Smooth transitions */
+        .transition-all-ease { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* --- RESPONSIVE --- */
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 99; transition: 0.3s; }
-        
-        @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-            .sidebar.mobile-active { left: 0; }
-            .sidebar-overlay.active { display: block; }
-            .main-content, .sidebar.collapsed ~ .main-content { width: 100%; }
-            .offcanvas-end { width: 100% !important; }
-            .top-navbar { padding: 0 20px; }
-            .content-area { padding: 20px; }
-            .user-role { display: none; }
+        /* --- DESKTOP COLLAPSE SIDEBAR STYLES --- */
+        @media (min-width: 1024px) {
+            .sidebar.collapsed { width: 88px !important; }
+            .sidebar.collapsed .menu-text,
+            .sidebar.collapsed .sidebar-title,
+            .sidebar.collapsed .badge-count { display: none; opacity: 0; }
+            .sidebar.collapsed .menu-item { justify-content: center; padding-left: 0; padding-right: 0; margin-left: 0.75rem; margin-right: 0.75rem; }
+            .sidebar.collapsed .menu-item i { margin-right: 0 !important; }
+            .sidebar.collapsed .logo-img { max-width: 40px; }
         }
     </style>
 </head>
-<body>
+<body class="bg-surface text-slate-800 font-sans antialiased overflow-hidden flex h-screen">
 
     <!-- MENGAMBIL DATA NOTIFIKASI ADMIN (Riwayat Aktivitas Terbaru) -->
     @php
         $notifications = collect();
         $hasNewNotif = false;
         
-        // Cek apakah model ActivityLog ada di sistem, jika ada tarik datanya
         if(class_exists('\App\Models\ActivityLog')) {
             $notifications = \App\Models\ActivityLog::with('user')->latest()->take(5)->get();
             $hasNewNotif = $notifications->count() > 0;
         }
     @endphp
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
-    <div class="wrapper">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar bg-white w-[280px] h-full border-r border-slate-200 flex flex-col transition-all-ease fixed lg:relative z-50 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <aside class="sidebar" id="sidebar">
-            <div class="logo-area">
-                <a href="{{ route('admin.dashboard') ?? '#' }}">
-                    <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img">
-                </a>
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center justify-center border-b border-slate-100 px-6 logo-area overflow-hidden">
+            <a href="{{ route('admin.dashboard') ?? '#' }}" class="flex items-center group">
+                <img src="{{ asset('img/logo.svg') }}" alt="Logo" class="logo-img max-w-[140px] group-hover:scale-105 transition-all-ease">
+            </a>
+            <button id="closeSidebarBtn" class="lg:hidden absolute right-4 text-slate-400 hover:text-slate-800">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Menu Utama</p>
+            
+            <a href="{{ route('admin.dashboard') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-border-all w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            
+            <a href="{{ route('admin.riwayat.perubahan') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-clock-rotate-left w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Riwayat Perubahan</span>
+            </a>
+            
+            <a href="{{ route('admin.users.index') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl bg-brand-50 text-brand-600 font-medium transition-all-ease">
+                <i class="fas fa-users w-5 text-center text-lg mr-3"></i>
+                <span class="menu-text">Kelola Data</span>
+            </a>
+            
+            <a href="{{ route('arsip.index') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-archive w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Arsip Seluruh Sistem</span>
+            </a>
+
+            <div class="pt-4 pb-2">
+                <div class="border-t border-slate-100"></div>
+            </div>
+            
+            <p class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sidebar-title">Pribadi</p>
+
+            <a href="{{ route('admin.settings') ?? '#' }}" class="menu-item flex items-center px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium transition-all-ease group">
+                <i class="fas fa-gear w-5 text-center text-lg mr-3 group-hover:text-brand-500 transition-colors"></i>
+                <span class="menu-text">Pengaturan Akun</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-slate-100">
+            <form action="{{ route('logout') }}" method="POST" id="logout-form" class="hidden">@csrf</form>
+            <button onclick="document.getElementById('logout-form').submit();" class="menu-item flex items-center px-4 py-3 w-full rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 font-medium transition-all-ease group">
+                <i class="fas fa-sign-out-alt w-5 text-center text-lg mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="menu-text">Keluar Sistem</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-surface relative transition-all-ease">
+        
+        <!-- GLASSMORPHISM NAVBAR -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-10 transition-all-ease">
+            
+            <div class="flex items-center gap-4 nav-left">
+                <button id="openSidebarBtn" class="hamburger-btn text-slate-500 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition-colors outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="hidden md:block">
+                    <h1 class="text-xl font-bold text-slate-800">Manajemen Pengguna</h1>
+                </div>
             </div>
 
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('admin.dashboard') ?? '#' }}" class="menu-item"><i class="fas fa-border-all menu-icon"></i><span class="menu-text">Dashboard</span></a></li>
-                <li><a href="{{ route('admin.riwayat.perubahan') ?? '#' }}" class="menu-item"><i class="fas fa-clock-rotate-left menu-icon"></i><span class="menu-text">Riwayat Perubahan</span></a></li>
-                <li><a href="{{ route('admin.users.index') ?? '#' }}" class="menu-item active"><i class="fas fa-users menu-icon"></i><span class="menu-text">Kelola data</span></a></li>
-                <li><a href="{{ route('arsip.index') ?? '#' }}" class="menu-item"><i class="fas fa-archive menu-icon"></i><span class="menu-text">Arsip Seluruh Sistem</span></a></li>
-                <li><a href="{{ route('admin.settings') ?? '#' }}" class="menu-item"><i class="fas fa-gear menu-icon"></i><span class="menu-text">Settings</span></a></li>
-            </ul>
+            <div class="flex items-center gap-4 lg:gap-6 nav-right">
+                <!-- NOTIFICATION BELL WITH PING -->
+                <div class="relative z-50 nav-icon">
+                    <button id="notifBtn" class="relative p-2.5 text-slate-400 hover:text-brand-600 bg-slate-50 hover:bg-brand-50 rounded-full transition-all-ease focus:outline-none">
+                        <i class="far fa-bell text-xl"></i>
+                        @if($hasNewNotif)
+                            <span class="absolute top-2 right-2.5 flex h-2.5 w-2.5 badge-dot">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white"></span>
+                            </span>
+                        @endif
+                    </button>
 
-            <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">@csrf</form>
-                <a href="#" class="menu-item" style="color: var(--text-gray);" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-arrow-right-from-bracket menu-icon"></i><span class="menu-text">Keluar</span>
-                </a>
+                    <!-- DROPDOWN NOTIFIKASI -->
+                    <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-xl opacity-0 invisible transform translate-y-[-10px] transition-all duration-300 ease-out notification-dropdown">
+                        <div class="p-4 border-b border-slate-100 flex justify-between items-center notification-header">
+                            <h3 class="font-semibold text-slate-800">Notifikasi Terkini</h3>
+                            @if($hasNewNotif)
+                                <span class="text-xs bg-brand-100 text-brand-700 font-bold px-2 py-1 rounded-md">{{ $notifications->count() }} Baru</span>
+                            @endif
+                        </div>
+                        <div class="max-h-[320px] overflow-y-auto no-scrollbar notification-list">
+                            @forelse($notifications as $log)
+                                <div class="flex items-start gap-4 p-4 hover:bg-slate-50 border-b border-slate-50 transition-colors group notification-item">
+                                    <div class="w-10 h-10 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-100 transition-colors notification-icon">
+                                        <i class="fas fa-history"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 notification-content">
+                                        <p class="text-sm text-slate-700 leading-snug mb-1"><strong>{{ $log->user->name ?? 'Sistem' }}</strong>: {{ $log->description }}</p>
+                                        <p class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i><span>{{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}</span></p>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="p-8 text-center notification-item">
+                                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 notification-icon">
+                                        <i class="fas fa-check-circle text-2xl"></i>
+                                    </div>
+                                    <p class="text-sm text-slate-500 font-medium notification-content">Belum ada riwayat aktivitas.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER PROFILE -->
+                <div class="flex items-center gap-3 pl-4 border-l border-slate-200 user-profile">
+                    <div class="hidden sm:block text-right user-info">
+                        <p class="text-sm font-bold text-slate-800 leading-tight user-name">{{ Auth::user()->name ?? 'Admin' }}</p>
+                        <p class="text-xs font-medium text-slate-500 capitalize user-role">{{ Auth::user()->role ?? 'admin' }}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100 user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                    </div>
+                </div>
             </div>
-        </aside>
+        </header>
 
-        <div class="main-content">
-            <header class="top-navbar">
-                <div class="nav-left">
-                    <button class="hamburger-btn" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-                    <h5 class="mb-0 fw-bold ms-3 d-none d-md-block">Data Pengguna</h5>
-                </div>
-                <div class="nav-right">
-
-                    <!-- AREA NOTIFIKASI -->
-                    <div class="nav-icon" id="notificationToggle">
-                        <i class="far fa-bell" style="font-size: 20px;"></i>
-                        <div class="badge-dot {{ $hasNewNotif ? 'active' : '' }}"></div>
-                        
-                        <!-- DROPDOWN NOTIFIKASI -->
-                        <div class="notification-dropdown" id="notificationDropdown">
-                            <div class="notification-header">
-                                Notifikasi Terkini
-                            </div>
-                            <ul class="notification-list">
-                                @forelse($notifications as $log)
-                                    <li class="notification-item">
-                                        <div class="notification-icon notif-admin"><i class="fas fa-history"></i></div>
-                                        <div class="notification-content">
-                                            <p><strong>{{ $log->user->name ?? 'Sistem' }}</strong>: {{ $log->description }}</p>
-                                            <span>{{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}</span>
-                                        </div>
-                                    </li>
-                                @empty
-                                    <li class="notification-item"><div class="notification-content"><p class="text-muted text-center w-100">Belum ada riwayat aktivitas.</p></div></li>
-                                @endforelse
-                            </ul>
+        <!-- SCROLLABLE CONTENT AREA -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 no-scrollbar content-area relative">
+            
+            <!-- FILTER CARD -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div class="col-span-1 md:col-span-4">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Cari Pengguna</label>
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="searchInput" onkeyup="filterTable()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700" placeholder="Ketik kata kunci...">
                         </div>
                     </div>
-                    <!-- END AREA NOTIFIKASI -->
-
-                    <div class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ Auth::user()->name ?? 'Admin Name' }}</p>
-                            <p class="user-role">admin</p>
-                        </div>
-                        <i class="fas fa-user-circle user-avatar"></i>
+                    <div class="col-span-1 md:col-span-3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Filter Jabatan</label>
+                        <select id="roleFilter" onchange="filterTable()" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white appearance-none">
+                            <option value="">Semua Jabatan</option>
+                            <option value="manager">Manajer</option>
+                            <option value="finance">Finance</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff Biasa</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Urutkan</label>
+                        <select class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white appearance-none">
+                            <option value="asc">A - Z</option>
+                            <option value="desc">Z - A</option>
+                            <option value="new">Terbaru</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1 md:col-span-3">
+                        <button type="button" onclick="resetForm()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> Tambah Pengguna
+                        </button>
                     </div>
                 </div>
-            </header>
+            </div>
 
-            <main class="content-area">
+            <!-- TABLE CARD -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-soft overflow-hidden flex flex-col">
                 
-                <div class="filter-card">
-                    <div class="row align-items-end g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Cari Pengguna</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Ketik kata kunci...">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Filter Jabatan</label>
-                            <select class="form-select">
-                                <option value="">Semua Jabatan</option>
-                                <option value="manager">Manajer</option>
-                                <option value="finance">Finance</option>
-                                <option value="admin">Admin</option>
-                                <option value="staff">Staff Biasa</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Urutkan</label>
-                            <select class="form-select">
-                                <option value="asc">A - Z</option>
-                                <option value="desc">Z - A</option>
-                                <option value="new">Terbaru Ditambahkan</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 text-md-end">
-                            <button type="button" class="btn btn-create" onclick="resetForm()">
-                                <i class="fas fa-plus"></i> Tambah Pengguna
-                            </button>
-                        </div>
-                    </div>
+                <div class="px-6 py-5 border-b border-slate-100 flex items-center bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 m-0 text-base">
+                        <span class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center">
+                            <i class="fas fa-users text-sm"></i>
+                        </span>
+                        Daftar Identitas Karyawan
+                    </h3>
                 </div>
 
-                <div class="table-card table-responsive">
-                    <table class="table table-borderless mb-0 align-middle">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[900px]">
                         <thead>
-                            <tr>
-                                <th>Informasi Pengguna</th>
-                                <th>NIK / No. Karyawan</th>
-                                <th>Divisi & Jabatan</th>
-                                <th>Kontak</th>
+                            <tr class="bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="p-5 w-[30%]">Informasi Pengguna</th>
+                                <th class="p-5 w-[20%]">NIK / No. Karyawan</th>
+                                <th class="p-5 w-[20%]">Divisi & Jabatan</th>
+                                <th class="p-5 w-[30%]">Kontak</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Data akan dimuat dari JS -->
+                        <tbody class="divide-y divide-slate-50" id="tableBody">
+                            <!-- Data akan dimuat dari JS melalui fetchUsers() -->
+                            <tr>
+                                <td colspan="4" class="p-10 text-center text-slate-400">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <p class="mt-2">Memuat Data Karyawan...</p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
 
-            </main>
         </div>
-    </div>
+    </main>
 
-    <!-- PANEL GESER OFFCANVAS -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="panelPengguna">
-        <div class="offcanvas-header border-bottom p-4">
-            <h5 class="offcanvas-title fw-bold" id="panelTitle">Tambah Pengguna Baru</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <!-- CUSTOM TAILWIND SLIDE-OVER PANEL -->
+    <div id="userPanelOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300" onclick="closeUserPanel()"></div>
+    
+    <div id="userPanel" class="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        
+        <!-- Header Panel -->
+        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/80 backdrop-blur-md">
+            <h5 class="font-bold text-lg text-slate-800" id="panelTitle">Tambah Pengguna Baru</h5>
+            <button type="button" onclick="closeUserPanel()" class="text-slate-400 hover:text-rose-500 transition-colors focus:outline-none p-2 rounded-lg hover:bg-rose-50">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
-        <div class="offcanvas-body p-4">
-            
+        
+        <!-- Body Panel -->
+        <div class="flex-1 overflow-y-auto p-6 no-scrollbar">
             <form id="formPengguna" onsubmit="event.preventDefault();">
                 <input type="hidden" id="userId" name="user_id">
                 
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="name" placeholder="Masukkan nama lengkap" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Lengkap <span class="text-rose-500">*</span></label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="name" placeholder="Masukkan nama lengkap" required>
                     </div>
                     
-                    <div class="col-md-6">
-                        <label class="form-label">Tempat Lahir</label>
-                        <input type="text" class="form-control" name="birth_place" placeholder="Kota lahir">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tempat Lahir</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="birth_place" placeholder="Kota lahir">
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal Lahir</label>
-                        <input type="date" class="form-control" name="birth_date">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tanggal Lahir</label>
+                        <input type="date" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="birth_date">
                     </div>
                     
-                    <div class="col-md-6">
-                        <label class="form-label">NIK (KTP)</label>
-                        <input type="text" class="form-control" name="nik" placeholder="16 Digit NIK">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">NIK (KTP)</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="nik" placeholder="16 Digit NIK">
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Nomor Karyawan</label>
-                        <input type="text" class="form-control" name="employee_id" placeholder="Contoh: EMP-001">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">No. Karyawan</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="employee_id" placeholder="Contoh: EMP-001">
                     </div>
 
-                    <!-- DROPDOWN DIVISI BARU -->
-                    <div class="col-md-6">
-                        <label class="form-label">Divisi <span class="text-danger">*</span></label>
-                        <select class="form-select" name="division" required>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Divisi <span class="text-rose-500">*</span></label>
+                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 appearance-none disabled:bg-slate-100 disabled:text-slate-400" name="division" required>
                             <option value="">-- Pilih Divisi --</option>
                             <option value="Finance">Finance</option>
                             <option value="GA">GA</option>
@@ -355,10 +351,9 @@
                         </select>
                     </div>
                     
-                    <!-- DROPDOWN JABATAN BARU -->
-                    <div class="col-md-6">
-                        <label class="form-label">Jabatan <span class="text-danger">*</span></label>
-                        <select class="form-select" name="role" required>
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Jabatan <span class="text-rose-500">*</span></label>
+                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 appearance-none disabled:bg-slate-100 disabled:text-slate-400" name="role" required>
                             <option value="">-- Pilih Jabatan --</option>
                             <option value="manager">Manajer</option>
                             <option value="finance">Finance</option>
@@ -367,24 +362,25 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" name="email" placeholder="nama@sanzaya.com" required>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email <span class="text-rose-500">*</span></label>
+                        <input type="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="email" placeholder="nama@sanzaya.com" required>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">No. Handphone</label>
-                        <input type="text" class="form-control" name="phone" placeholder="08xxx">
+                    
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">No. Handphone</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="phone" placeholder="08xxx">
                     </div>
 
                     <!-- INFORMASI REKENING BANK -->
-                    <div class="col-12 mt-4">
-                        <h6 class="fw-bold mb-2" style="color: var(--primary-blue);"><i class="fas fa-university me-2"></i>Informasi Rekening Bank</h6>
-                        <hr class="mt-0 mb-3">
+                    <div class="col-span-1 md:col-span-2 mt-4">
+                        <h6 class="font-bold text-brand-600 mb-2 flex items-center gap-2"><i class="fas fa-university"></i> Rekening Bank</h6>
+                        <hr class="border-slate-100 mb-4">
                     </div>
                     
-                    <div class="col-md-4 mt-0">
-                        <label class="form-label">Bank</label>
-                        <select class="form-select" name="bank">
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Bank</label>
+                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 appearance-none disabled:bg-slate-100 disabled:text-slate-400" name="bank">
                             <option value="">Pilih Bank</option>
                             <option value="BCA">BCA</option>
                             <option value="Mandiri">Mandiri</option>
@@ -395,117 +391,207 @@
                             <option value="Lainnya">Lainnya...</option>
                         </select>
                     </div>
-                    <div class="col-md-4 mt-0">
-                        <label class="form-label">No. Rekening</label>
-                        <input type="text" class="form-control" name="nomor_rekening" placeholder="Contoh: 12345678">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">No. Rekening</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="nomor_rekening" placeholder="Contoh: 12345678">
                     </div>
-                    <div class="col-md-4 mt-0">
-                        <label class="form-label">Atas Nama</label>
-                        <input type="text" class="form-control" name="nama_rekening" placeholder="Sesuai buku">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Atas Nama</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="nama_rekening" placeholder="Sesuai buku">
                     </div>
 
-                    <div class="col-12 mt-4">
-                        <label class="form-label">Password Sistem</label>
-                        <input type="password" class="form-control" name="password" placeholder="Kosongkan untuk password default: 12345678">
+                    <div class="col-span-1 md:col-span-2 mt-4">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Password Sistem</label>
+                        <input type="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-500/20 transition-all outline-none text-sm bg-slate-50 focus:bg-white text-slate-700 disabled:bg-slate-100 disabled:text-slate-400" name="password" placeholder="Kosongkan untuk password default: 12345678">
                     </div>
-                </div>
-
-                <div class="mt-5 pt-3 border-top" id="actionButtons">
-                    <!-- Tombol akan dimuat secara dinamis melalui JS -->
                 </div>
             </form>
-
+        </div>
+        
+        <!-- Footer Panel -->
+        <div class="p-6 border-t border-slate-100 bg-slate-50/80 backdrop-blur-md" id="actionButtons">
+            <!-- Tombol akan dimuat secara dinamis melalui JS -->
         </div>
     </div>
 
-    <!-- PENTING: Panggil library SweetAlert2 untuk Popup -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- INTERACTIVE SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         // --- SETUP CSRF TOKEN UNTUK AJAX ---
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+        // --- Variabel Slide-over Panel ---
+        const userPanel = document.getElementById('userPanel');
+        const userPanelOverlay = document.getElementById('userPanelOverlay');
+
+        function openUserPanel() {
+            userPanelOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                userPanelOverlay.classList.remove('opacity-0');
+                userPanelOverlay.classList.add('opacity-100');
+                userPanel.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function closeUserPanel() {
+            userPanel.classList.add('translate-x-full');
+            userPanelOverlay.classList.remove('opacity-100');
+            userPanelOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                userPanelOverlay.classList.add('hidden');
+            }, 300);
+        }
+
         // --- LOGIKA NOTIFIKASI DROPDOWN ---
-        const notificationToggle = document.getElementById('notificationToggle');
-        const notificationDropdown = document.getElementById('notificationDropdown');
+        const notifBtn = document.getElementById('notifBtn');
+        const notifDropdown = document.getElementById('notifDropdown');
         const badgeDot = document.querySelector('.badge-dot');
 
-        if(notificationToggle) {
-            notificationToggle.addEventListener('click', function(event) {
-                event.stopPropagation(); // Mencegah klik menyebar ke window
-                notificationDropdown.classList.toggle('show');
-                // Jika dropdown dibuka, sembunyikan titik merah
-                if(notificationDropdown.classList.contains('show') && badgeDot) {
-                    badgeDot.classList.remove('active');
+        if(notifBtn && notifDropdown) {
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = notifDropdown.classList.contains('invisible');
+                if (isHidden) {
+                    notifDropdown.classList.remove('invisible', 'opacity-0', 'translate-y-[-10px]');
+                    notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                    if(badgeDot) badgeDot.style.display = 'none'; // hide ping
+                } else {
+                    closeNotif();
                 }
             });
 
-            // Tutup dropdown jika klik di luar area
-            window.addEventListener('click', function(event) {
-                if (!notificationToggle.contains(event.target)) {
-                    notificationDropdown.classList.remove('show');
-                }
+            function closeNotif() {
+                notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                notifDropdown.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => notifDropdown.classList.add('invisible'), 300);
+            }
+
+            window.addEventListener('click', (e) => {
+                if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) closeNotif();
             });
         }
 
         // --- LOGIKA SIDEBAR ---
         const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-active');
-                overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
+        const openSidebarBtn = document.getElementById('openSidebarBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        if(openSidebarBtn) {
+            openSidebarBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.remove('-translate-x-full');
+                    mobileOverlay.classList.remove('hidden');
+                    setTimeout(() => mobileOverlay.classList.replace('opacity-0', 'opacity-100'), 10);
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                }
+            });
+        }
+
+        function closeSidebar() {
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                setTimeout(() => mobileOverlay.classList.add('hidden'), 300);
             }
-        });
-        overlay.addEventListener('click', function() {
-            sidebar.classList.remove('mobile-active');
-            overlay.classList.remove('active');
-        });
+        }
+        if(closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+        if(mobileOverlay) mobileOverlay.addEventListener('click', closeSidebar);
 
         // --- LOAD DATA TABEL (AJAX) ---
         async function fetchUsers() {
             try {
-                // Pastikan route backend Anda ada di /admin/api/users atau sesuaikan
                 const response = await fetch('/admin/api/users');
                 const users = await response.json();
                 let tableBody = document.getElementById('tableBody');
                 tableBody.innerHTML = ''; 
 
+                if (users.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="p-10 text-center text-slate-500">
+                                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mx-auto mb-3">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <p class="text-sm font-medium">Belum ada data pengguna.</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
                 users.forEach(user => {
-                    // Penentuan Warna Badge Jabatan
-                    let badgeClass = 'bg-staff';
-                    if(user.role === 'admin') badgeClass = 'bg-admin';
-                    if(user.role === 'finance') badgeClass = 'bg-finance';
-                    if(user.role === 'manager') badgeClass = 'bg-manager';
+                    // Penentuan Warna Badge Jabatan ala Tailwind
+                    let badgeClass = 'bg-brand-50 text-brand-600 border border-brand-200/50';
+                    if(user.role === 'admin') badgeClass = 'bg-rose-50 text-rose-600 border border-rose-200/50';
+                    if(user.role === 'finance') badgeClass = 'bg-purple-50 text-purple-600 border border-purple-200/50';
+                    if(user.role === 'manager') badgeClass = 'bg-emerald-50 text-emerald-600 border border-emerald-200/50';
                     
                     let row = `
-                        <tr style="cursor: pointer;" onclick="loadDetailData(${user.id})">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                        <i class="fas fa-user text-primary"></i>
+                        <tr class="hover:bg-brand-50/50 transition-colors duration-200 cursor-pointer group" onclick="loadDetailData(${user.id})">
+                            <td class="p-5 align-middle border-b border-slate-50">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white shadow-sm flex-shrink-0 group-hover:bg-brand-100 group-hover:text-brand-600 transition-colors">
+                                        ${user.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <div><p class="mb-0 fw-bold">${user.name}</p><span class="text-muted small">${user.birth_place || '-'}, ${user.birth_date || '-'}</span></div>
+                                    <div>
+                                        <p class="font-bold text-slate-800 text-sm mb-0.5 leading-tight">${user.name}</p>
+                                        <span class="text-xs font-medium text-slate-500">${user.birth_place || '-'}, ${user.birth_date || '-'}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td><p class="mb-0 fw-medium">${user.nik || '-'}</p><span class="text-muted small">${user.employee_id || '-'}</span></td>
-                            <td><p class="mb-1"><span class="badge-jabatan ${badgeClass}">${user.role}</span></p><span class="text-muted small">${user.division || '-'}</span></td>
-                            <td><p class="mb-0 small"><i class="fas fa-envelope text-muted me-2"></i> ${user.email}</p><p class="mb-0 small"><i class="fas fa-phone text-muted me-2"></i> ${user.phone || '-'}</p></td>
+                            <td class="p-5 align-middle border-b border-slate-50">
+                                <p class="font-bold text-slate-700 text-sm mb-0.5 leading-tight">${user.nik || '-'}</p>
+                                <span class="text-xs font-medium text-slate-500">${user.employee_id || '-'}</span>
+                            </td>
+                            <td class="p-5 align-middle border-b border-slate-50">
+                                <p class="mb-1"><span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shadow-sm ${badgeClass}">${user.role}</span></p>
+                                <span class="text-xs font-medium text-slate-500">${user.division || '-'}</span>
+                            </td>
+                            <td class="p-5 align-middle border-b border-slate-50">
+                                <p class="text-xs font-medium text-slate-600 mb-1 flex items-center gap-2"><i class="fas fa-envelope text-slate-400 w-3 text-center"></i> ${user.email}</p>
+                                <p class="text-xs font-medium text-slate-600 m-0 flex items-center gap-2"><i class="fas fa-phone text-slate-400 w-3 text-center"></i> ${user.phone || '-'}</p>
+                            </td>
                         </tr>
                     `;
                     tableBody.insertAdjacentHTML('beforeend', row);
                 });
             } catch (error) { 
                 console.error("Gagal memuat data tabel:", error); 
+                document.getElementById('tableBody').innerHTML = `
+                    <tr><td colspan="4" class="p-10 text-center text-rose-500 font-bold">Gagal memuat data dari server.</td></tr>
+                `;
             }
         }
 
         // Panggil data saat halaman terbuka
         document.addEventListener('DOMContentLoaded', fetchUsers);
+
+        // --- FILTER LOCAL PENCARIAN & JABATAN ---
+        function filterTable() {
+            let searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+            let roleKeyword = document.getElementById('roleFilter').value.toLowerCase();
+            let tableRows = document.querySelectorAll('#tableBody tr');
+
+            tableRows.forEach(row => {
+                if(row.cells.length > 1) { // Skip jika baris "Memuat data"
+                    let textData = row.innerText.toLowerCase();
+                    let roleData = row.cells[2].innerText.toLowerCase();
+
+                    let matchSearch = textData.includes(searchKeyword);
+                    let matchRole = roleKeyword === "" || roleData.includes(roleKeyword);
+
+                    if (matchSearch && matchRole) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
 
         // --- MODE: TAMBAH DATA BARU ---
         function resetForm() {
@@ -517,19 +603,17 @@
                 document.querySelectorAll('#formPengguna input, #formPengguna select').forEach(el => el.disabled = false);
 
                 document.getElementById('actionButtons').innerHTML = `
-                    <div class="action-bar mt-2">
-                        <button type="button" class="btn-minimal btn-minimal-icon" data-bs-dismiss="offcanvas" title="Batal">
-                            <i class="fas fa-times"></i>
+                    <div class="flex justify-between items-center w-full">
+                        <button type="button" class="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm flex items-center gap-2" onclick="closeUserPanel()">
+                            Batal
                         </button>
-                        <button type="button" class="btn-minimal primary" onclick="submitData()">
-                            Simpan
+                        <button type="button" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2" onclick="submitData()">
+                            <i class="fas fa-save"></i> Simpan Data
                         </button>
                     </div>
                 `;
 
-                const panel = document.getElementById('panelPengguna');
-                const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(panel);
-                bsOffcanvas.show();
+                openUserPanel();
             } catch (error) {
                 console.error("Terjadi kesalahan saat membuka form:", error);
             }
@@ -540,9 +624,7 @@
             document.getElementById('panelTitle').innerText = 'Memuat Data...';
             
             // Tampilkan panel
-            const panel = document.getElementById('panelPengguna');
-            const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(panel);
-            bsOffcanvas.show();
+            openUserPanel();
             
             try {
                 const response = await fetch(`/admin/api/users/${id}`);
@@ -552,9 +634,9 @@
                 document.getElementById('userId').value = user.id;
 
                 // Isi Form
-                document.querySelector('[name="name"]').value = user.name;
-                document.querySelector('[name="email"]').value = user.email;
-                document.querySelector('[name="role"]').value = user.role;
+                document.querySelector('[name="name"]').value = user.name || '';
+                document.querySelector('[name="email"]').value = user.email || '';
+                document.querySelector('[name="role"]').value = user.role || '';
                 document.querySelector('[name="nik"]').value = user.nik || '';
                 document.querySelector('[name="employee_id"]').value = user.employee_id || '';
                 document.querySelector('[name="division"]').value = user.division || '';
@@ -573,28 +655,29 @@
                 document.querySelectorAll('#formPengguna input, #formPengguna select').forEach(el => el.disabled = true);
 
                 document.getElementById('actionButtons').innerHTML = `
-                    <div class="action-bar mt-2">
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn-minimal btn-minimal-icon" data-bs-dismiss="offcanvas" title="Tutup">
-                                <i class="fas fa-times"></i>
+                    <div class="flex justify-between items-center w-full">
+                        <div class="flex gap-3">
+                            <button type="button" class="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm" onclick="closeUserPanel()">
+                                Tutup
                             </button>
-                            <button type="button" class="btn-minimal btn-minimal-icon danger" onclick="deleteUser(${user.id})" title="Hapus">
-                                <i class="far fa-trash-alt"></i>
+                            <button type="button" class="bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:text-rose-700 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm flex items-center gap-2" onclick="deleteUser(${user.id})" title="Hapus">
+                                <i class="far fa-trash-alt"></i> Hapus
                             </button>
                         </div>
-                        <button type="button" class="btn-minimal" onclick="enableEditMode()">
-                            Edit Data <i class="fas fa-pencil-alt ms-2"></i>
+                        <button type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2" onclick="enableEditMode()">
+                            <i class="fas fa-pencil-alt"></i> Edit Data
                         </button>
                     </div>
                 `;
             } catch (error) { 
-                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Gagal menarik data dari server.' }); 
+                closeUserPanel();
+                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Gagal menarik data dari server.', customClass: { popup: 'rounded-2xl' } }); 
             }
         }
 
         // --- MODE: EDIT DATA ---
         function enableEditMode() {
-            document.getElementById('panelTitle').innerText = 'Edit Pengguna';
+            document.getElementById('panelTitle').innerText = 'Edit Data Pengguna';
             
             // Buka kunci semua input
             document.querySelectorAll('#formPengguna input, #formPengguna select').forEach(el => {
@@ -602,18 +685,13 @@
             });
 
             document.getElementById('actionButtons').innerHTML = `
-                <div class="action-bar mt-2">
-                    <button type="button" class="btn-minimal" onclick="loadDetailData(document.getElementById('userId').value)">
+                <div class="flex justify-between items-center w-full">
+                    <button type="button" class="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm" onclick="loadDetailData(document.getElementById('userId').value)">
                         Batal
                     </button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn-minimal btn-minimal-icon danger" onclick="deleteUser(document.getElementById('userId').value)" title="Hapus">
-                            <i class="far fa-trash-alt"></i>
-                        </button>
-                        <button type="button" class="btn-minimal btn-minimal-icon primary" onclick="submitData()" title="Simpan Perubahan">
-                            <i class="far fa-save"></i>
-                        </button>
-                    </div>
+                    <button type="button" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2" onclick="submitData()">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
                 </div>
             `;
         }
@@ -633,7 +711,8 @@
                 title: 'Menyimpan...',
                 text: 'Mohon tunggu.',
                 allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+                didOpen: () => { Swal.showLoading(); },
+                customClass: { popup: 'rounded-2xl' }
             });
 
             try {
@@ -649,17 +728,24 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    bootstrap.Offcanvas.getInstance(document.getElementById('panelPengguna')).hide();
+                    closeUserPanel();
                     fetchUsers();
-                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Data disimpan.', showConfirmButton: false, timer: 1500 });
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'Berhasil!', 
+                        text: 'Data disimpan.', 
+                        showConfirmButton: false, 
+                        timer: 1500,
+                        customClass: { popup: 'rounded-2xl' }
+                    });
                 } else {
                     let errorMsg = 'Gagal menyimpan data.';
                     if (response.status === 422 && result.errors) errorMsg = Object.values(result.errors)[0][0]; 
                     else if (result.message) errorMsg = result.message;
-                    Swal.fire({ icon: 'error', title: 'Gagal', text: errorMsg });
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: errorMsg, customClass: { popup: 'rounded-2xl' } });
                 }
             } catch (error) { 
-                Swal.fire({ icon: 'error', title: 'Kesalahan Sistem', text: 'Gagal menghubungi server.' });
+                Swal.fire({ icon: 'error', title: 'Kesalahan Sistem', text: 'Gagal menghubungi server.', customClass: { popup: 'rounded-2xl' } });
             }
         }
 
@@ -667,13 +753,14 @@
         async function deleteUser(id) {
             Swal.fire({
                 title: 'Hapus Pengguna?',
-                text: "Data yang dihapus tidak bisa dikembalikan!",
+                text: "Data karyawan yang dihapus tidak bisa dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#DC2626',
-                cancelButtonColor: '#F1F1F1',
+                cancelButtonColor: '#f1f5f9',
                 confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: '<span style="color: #333;">Batal</span>'
+                cancelButtonText: '<span class="text-slate-600">Batal</span>',
+                customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl', cancelButton: 'rounded-xl' }
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
@@ -687,14 +774,14 @@
                         });
                         
                         if (response.ok) {
-                            bootstrap.Offcanvas.getInstance(document.getElementById('panelPengguna')).hide();
+                            closeUserPanel();
                             fetchUsers();
-                            Swal.fire({ icon: 'success', title: 'Terhapus!', text: 'Pengguna dihapus.', showConfirmButton: false, timer: 1500 });
+                            Swal.fire({ icon: 'success', title: 'Terhapus!', text: 'Pengguna telah dihapus.', showConfirmButton: false, timer: 1500, customClass: { popup: 'rounded-2xl' } });
                         } else {
-                            Swal.fire({ icon: 'error', title: 'Gagal', text: 'Pengguna gagal dihapus.' });
+                            Swal.fire({ icon: 'error', title: 'Gagal', text: 'Pengguna gagal dihapus.', customClass: { popup: 'rounded-2xl' } });
                         }
                     } catch (error) { 
-                        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Kesalahan server.' });
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Kesalahan server.', customClass: { popup: 'rounded-2xl' } });
                     }
                 }
             });
